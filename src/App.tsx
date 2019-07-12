@@ -1,10 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './App.css'
+import Easing from './components/Easing'
+import logo from './logo.svg'
 
 const App: React.FC = () => {
   return (
     <div className="App">
+      <Easing />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -20,7 +22,7 @@ const App: React.FC = () => {
         </a>
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

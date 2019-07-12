@@ -1,0 +1,35 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended"],
+  "jsRules": {
+    "max-line-length": {
+      "options": [80]
+    }
+  },
+  "rules": {
+    "max-line-length": [true, { "limit": 120, "ignore-pattern": "//" }],
+
+    "semicolon": ["never"],
+    "new-parens": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": [true],
+    "member-access": [true, "no-public"],
+    "quotemark": [true, "single", "jsx-double"],
+    "object-literal-sort-keys": false,
+    "object-literal-key-quotes": [true, "as-needed"],
+    "no-switch-case-fall-through": true,
+    "no-unused-variable": true,
+    "interface-name": [true, "never-prefix"],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "require-const-for-all-caps"
+    ]
+  },
+  "rulesDirectory": []
+}
