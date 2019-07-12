@@ -5,60 +5,68 @@
  */
 
 import React, { Component } from 'react'
+import { Base } from '../../graphic/Base'
+import EasingGraphic from '../../graphic/Easing'
+import { buildGraphic } from '../../graphic/factory'
+import Manager from '../../graphic/Manager'
 
 interface EasingProps {
   width: number
   height: number
-  easing: number
 }
+
+type BaseConstructor = new (props: any) => Base
 
 interface EasingState {
   width: number
   height: number
-  ballX: number
-  ballY: number
-  targetX: number
-  targetY: number
   lastDrawTime: number
 }
+
+interface GraphicConfigItem {
+  graphicClass: BaseConstructor
+  props: any
+}
+
+const graphicConfig: GraphicConfigItem[] = [
+  {
+    graphicClass: EasingGraphic,
+    props: {
+      easing: 0.05,
+    },
+  },
+  {
+    graphicClass: EasingGraphic,
+    props: {
+      easing: 0.1,
+    },
+  },
+  {
+    graphicClass: EasingGraphic,
+    props: {
+      easing: 0.2,
+    },
+  },
+]
 
 class Easing extends Component<EasingProps, EasingState> {
   static defaultProps: EasingProps = {
     width: 400,
     height: 400,
-    easing: 0.05,
   }
+
+  manager: Manager | null
 
   constructor(props: EasingProps) {
     super(props)
+    this.manager = null
     this.state = {
       width: props.width,
       height: props.height,
-      ballX: 0,
-      ballY: 0,
-      targetX: 0,
-      targetY: 0,
       lastDrawTime: 0,
     }
-    this.onMouseMove = this.onMouseMove.bind(this)
     this.onWinResize = this.onWinResize.bind(this)
     this.onEnterFrame = this.onEnterFrame.bind(this)
-  }
-
-  onMouseMove(event: MouseEvent) {
-    const { clientX, clientY } = event
-    this.setState({
-      targetX: clientX,
-      targetY: clientY,
-    })
-  }
-
-  onWinResize() {
-    const { innerWidth, innerHeight } = window
-    this.setState({
-      width: innerWidth,
-      height: innerHeight,
-    })
   }
 
   // get centerX() {
@@ -81,30 +89,30 @@ class Easing extends Component<EasingProps, EasingState> {
       width: innerWidth,
       height: innerHeight,
     })
-    window.addEventListener('mousemove', this.onMouseMove, false)
+    const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
+    const context2d: CanvasRenderingContext2D = canvas.getContext(
+      '2d',
+    ) as CanvasRenderingContext2D
+
+    const manager = (this.manager = new Manager(context2d))
+    graphicConfig.forEach((config) => {
+      const { graphicClass, props } = config
+      const graphic = buildGraphic(manager, graphicClass, props)
+    })
+
     window.addEventListener('resize', this.onWinResize, false)
     window.requestAnimationFrame(this.onEnterFrame)
   }
 
-  onEnterFrame() {
-    this.updateBallPosition()
-    this.drawBall()
-    window.requestAnimationFrame(this.onEnterFrame)
-  }
-
-  updateBallPosition() {
-    this.setState((state: EasingState, props: EasingProps) => {
-      const { ballX, ballY, targetX, targetY } = state
-      const { easing } = props
-
-      return {
-        ballX: ballX + (targetX - ballX) * easing,
-        ballY: ballY + (targetY - ballY) * easing,
-      }
+  private onWinResize() {
+    const { innerWidth, innerHeight } = window
+    this.setState({
+      width: innerWidth,
+      height: innerHeight,
     })
   }
 
-  logInterval() {
+  private logInterval() {
     const now = Date.now()
     const { lastDrawTime } = this.state
 
@@ -113,7 +121,7 @@ class Easing extends Component<EasingProps, EasingState> {
     })
   }
 
-  drawBall() {
+  private clearCanvas() {
     const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
     const context2d: CanvasRenderingContext2D = canvas.getContext(
       '2d',
@@ -122,13 +130,16 @@ class Easing extends Component<EasingProps, EasingState> {
       return
     }
     const { width, height } = canvas
-    const { ballX, ballY } = this.state
     context2d.clearRect(0, 0, width, height)
-    context2d.save()
-    context2d.beginPath()
-    context2d.arc(ballX, ballY, 2, 0, Math.PI * 2, false)
-    context2d.fill()
-    context2d.restore()
+  }
+
+  private onEnterFrame() {
+    const { manager } = this
+    if (manager) {
+      this.clearCanvas()
+      manager.onEnterFrame()
+    }
+    window.requestAnimationFrame(this.onEnterFrame)
   }
 }
 
