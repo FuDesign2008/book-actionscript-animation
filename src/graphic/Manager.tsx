@@ -4,18 +4,18 @@
  * @date  2019-07-12
  */
 
-import { Base } from './Base'
+import { GraphicComponent } from './GraphicComponent'
 
 class Manager {
   private context2d: CanvasRenderingContext2D
-  private graphicList: Base[]
+  private graphicList: GraphicComponent[]
 
   constructor(context2d: CanvasRenderingContext2D) {
     this.context2d = context2d
     this.graphicList = []
   }
 
-  add(graphic: Base) {
+  add(graphic: GraphicComponent) {
     const { graphicList, context2d } = this
     if (graphicList.includes(graphic)) {
       return
@@ -25,7 +25,7 @@ class Manager {
     graphic.componentDidMount()
   }
 
-  remove(graphic: Base) {
+  remove(graphic: GraphicComponent) {
     const { graphicList, context2d } = this
     if (graphicList.includes(graphic)) {
       const newGraphicList = graphicList.filter((item) => {
@@ -39,11 +39,11 @@ class Manager {
 
   onEnterFrame() {
     const { graphicList } = this
-    graphicList.forEach((item: Base) => {
+    graphicList.forEach((item: GraphicComponent) => {
       item.onEnterFrame()
     })
 
-    graphicList.forEach((item: Base) => {
+    graphicList.forEach((item: GraphicComponent) => {
       item.runDraw()
     })
   }

@@ -3,17 +3,17 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { Base} from './Base'
+import { GraphicComponent } from './GraphicComponent'
 import Manager from './Manager'
 
-type BaseConstructor = new (props: any) => Base
+type BaseConstructor = new (props: any) => GraphicComponent
 
 function buildGraphic(
   manager: Manager,
   graphicClass: BaseConstructor,
   props: any,
-): Base {
-  const graphic: Base = new graphicClass(props)
+): GraphicComponent {
+  const graphic: GraphicComponent = new graphicClass(props)
   manager.add(graphic)
   return graphic
 }

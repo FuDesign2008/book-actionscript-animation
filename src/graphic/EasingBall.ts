@@ -3,23 +3,23 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { Base } from './Base'
+import { GraphicComponent } from './GraphicComponent'
 
-interface EasingProps {
+interface EasingBallProps {
   easing: number
 }
 
-interface EasingState {
+interface EasingBallState {
   x: number
   y: number
   targetX: number
   targetY: number
 }
 
-class Easing extends Base {
-  constructor(props: EasingProps) {
+class EasingBall extends GraphicComponent {
+  constructor(props: EasingBallProps) {
     super(props)
-    const state: EasingState = {
+    const state: EasingBallState = {
       x: 0,
       y: 0,
       targetX: 0,
@@ -30,7 +30,7 @@ class Easing extends Base {
   }
 
   onEnterFrame() {
-    this.setState((state: EasingState, props: EasingProps) => {
+    this.setState((state: EasingBallState, props: EasingBallProps) => {
       const { x, y, targetX, targetY } = state
       const { easing } = props
 
@@ -49,7 +49,7 @@ class Easing extends Base {
     this.unbindEvents()
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: EasingState) {
+  draw(context2d: CanvasRenderingContext2D, state: EasingBallState) {
     const { x, y } = state
     context2d.beginPath()
     context2d.arc(x, y, 2, 0, Math.PI * 2, false)
@@ -73,4 +73,4 @@ class Easing extends Base {
   }
 }
 
-export default Easing
+export default EasingBall

@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
-import Easing from './components/Easing'
+import GraphicCanvas from './components/GraphicCanvas'
 import logo from './logo.svg'
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <Easing />
+      <GraphicCanvas />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

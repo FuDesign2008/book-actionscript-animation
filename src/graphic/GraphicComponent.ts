@@ -6,7 +6,7 @@
 import cloneDeep from 'lodash.clonedeep'
 import isEqual from 'lodash.isequal'
 
-class Base {
+class GraphicComponent {
   protected state: object
   protected prevState: object
   protected props: object
@@ -67,4 +67,4 @@ class Base {
   }
 }
 
-export { Base }
+export { GraphicComponent }

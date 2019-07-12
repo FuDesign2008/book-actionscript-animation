@@ -5,19 +5,19 @@
  */
 
 import React, { Component } from 'react'
-import { Base } from '../../graphic/Base'
-import EasingGraphic from '../../graphic/Easing'
+import EasingBall from '../../graphic/EasingBall'
 import { buildGraphic } from '../../graphic/factory'
+import { GraphicComponent } from '../../graphic/GraphicComponent'
 import Manager from '../../graphic/Manager'
 
-interface EasingProps {
+interface GraphicCavansProps {
   width: number
   height: number
 }
 
-type BaseConstructor = new (props: any) => Base
+type BaseConstructor = new (props: any) => GraphicComponent
 
-interface EasingState {
+interface GraphicCanvasState {
   width: number
   height: number
   lastDrawTime: number
@@ -30,34 +30,34 @@ interface GraphicConfigItem {
 
 const graphicConfig: GraphicConfigItem[] = [
   {
-    graphicClass: EasingGraphic,
+    graphicClass: EasingBall,
     props: {
       easing: 0.05,
     },
   },
   {
-    graphicClass: EasingGraphic,
+    graphicClass: EasingBall,
     props: {
       easing: 0.1,
     },
   },
   {
-    graphicClass: EasingGraphic,
+    graphicClass: EasingBall,
     props: {
       easing: 0.2,
     },
   },
 ]
 
-class Easing extends Component<EasingProps, EasingState> {
-  static defaultProps: EasingProps = {
+class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
+  static defaultProps: GraphicCavansProps = {
     width: 400,
     height: 400,
   }
 
   manager: Manager | null
 
-  constructor(props: EasingProps) {
+  constructor(props: GraphicCavansProps) {
     super(props)
     this.manager = null
     this.state = {
@@ -70,12 +70,12 @@ class Easing extends Component<EasingProps, EasingState> {
   }
 
   // get centerX() {
-  // const props: EasingProps = this.props
+  // const props: GraphicCavansProps = this.props
   // return props.width / 2
   // }
 
   render() {
-    const state: EasingState = this.state
+    const state: GraphicCanvasState = this.state
     return (
       <div>
         <canvas ref="canvas" width={state.width} height={state.height} />
@@ -143,4 +143,4 @@ class Easing extends Component<EasingProps, EasingState> {
   }
 }
 
-export default Easing
+export default GraphicCanvas
