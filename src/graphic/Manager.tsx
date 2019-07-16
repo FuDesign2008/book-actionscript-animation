@@ -26,7 +26,7 @@ class Manager {
   }
 
   remove(graphic: GraphicComponent) {
-    const { graphicList, context2d } = this
+    const { graphicList } = this
     if (graphicList.includes(graphic)) {
       const newGraphicList = graphicList.filter((item) => {
         return item !== graphic

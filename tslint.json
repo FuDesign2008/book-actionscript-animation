@@ -8,7 +8,6 @@
   },
   "rules": {
     "max-line-length": [true, { "limit": 120, "ignore-pattern": "//" }],
-
     "semicolon": ["never"],
     "new-parens": true,
     "no-arg": true,
@@ -21,7 +20,6 @@
     "object-literal-sort-keys": false,
     "object-literal-key-quotes": [true, "as-needed"],
     "no-switch-case-fall-through": true,
-    "no-unused-variable": true,
     "interface-name": [true, "never-prefix"],
     "variable-name": [
       true,

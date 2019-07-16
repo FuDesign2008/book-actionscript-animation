@@ -1,12 +1,13 @@
 import React from 'react'
 import './App.css'
 import GraphicCanvas from './components/GraphicCanvas'
+import { graphicConfig } from './graphicConfig'
 import logo from './logo.svg'
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <GraphicCanvas />
+      <GraphicCanvas graphicConfig={graphicConfig} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

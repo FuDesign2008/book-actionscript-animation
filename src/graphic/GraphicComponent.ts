@@ -4,7 +4,6 @@
  * @date  2019-07-12
  */
 import cloneDeep from 'lodash.clonedeep'
-import isEqual from 'lodash.isequal'
 
 class GraphicComponent {
   protected state: object
@@ -37,7 +36,7 @@ class GraphicComponent {
   }
 
   runDraw() {
-    const { context2d, state, prevState } = this
+    const { context2d, state } = this
     // if (context2d && !isEqual(state, prevState)) {
     if (context2d) {
       const cloneState = cloneDeep(state)
@@ -48,7 +47,7 @@ class GraphicComponent {
     }
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: object) {
+  draw(_context2d: CanvasRenderingContext2D, _state: object) {
     // do draw....
   }
 

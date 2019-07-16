@@ -5,17 +5,14 @@
  */
 
 import React, { Component } from 'react'
-import EasingBall from '../../graphic/EasingBall'
 import { buildGraphic } from '../../graphic/factory'
-import { GraphicComponent } from '../../graphic/GraphicComponent'
 import Manager from '../../graphic/Manager'
 
 interface GraphicCavansProps {
   width: number
   height: number
+  graphicConfig: any[]
 }
-
-type BaseConstructor = new (props: any) => GraphicComponent
 
 interface GraphicCanvasState {
   width: number
@@ -23,36 +20,11 @@ interface GraphicCanvasState {
   lastDrawTime: number
 }
 
-interface GraphicConfigItem {
-  graphicClass: BaseConstructor
-  props: any
-}
-
-const graphicConfig: GraphicConfigItem[] = [
-  {
-    graphicClass: EasingBall,
-    props: {
-      easing: 0.05,
-    },
-  },
-  {
-    graphicClass: EasingBall,
-    props: {
-      easing: 0.1,
-    },
-  },
-  {
-    graphicClass: EasingBall,
-    props: {
-      easing: 0.2,
-    },
-  },
-]
-
 class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
   static defaultProps: GraphicCavansProps = {
     width: 400,
     height: 400,
+    graphicConfig: [],
   }
 
   manager: Manager | null
@@ -68,11 +40,6 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     this.onWinResize = this.onWinResize.bind(this)
     this.onEnterFrame = this.onEnterFrame.bind(this)
   }
-
-  // get centerX() {
-  // const props: GraphicCavansProps = this.props
-  // return props.width / 2
-  // }
 
   render() {
     const state: GraphicCanvasState = this.state
@@ -95,9 +62,10 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     ) as CanvasRenderingContext2D
 
     const manager = (this.manager = new Manager(context2d))
+    const { graphicConfig } = this.props
     graphicConfig.forEach((config) => {
       const { graphicClass, props } = config
-      const graphic = buildGraphic(manager, graphicClass, props)
+      buildGraphic(manager, graphicClass, props)
     })
 
     window.addEventListener('resize', this.onWinResize, false)
@@ -109,15 +77,6 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     this.setState({
       width: innerWidth,
       height: innerHeight,
-    })
-  }
-
-  private logInterval() {
-    const now = Date.now()
-    const { lastDrawTime } = this.state
-
-    this.setState({
-      lastDrawTime: now,
     })
   }
 
