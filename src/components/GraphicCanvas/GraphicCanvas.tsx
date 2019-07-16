@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react'
 import { buildGraphic } from '../../graphic/factory'
-import Manager from '../../graphic/Manager'
+import GraphicManager from '../../graphic/GraphicManager'
 
 interface GraphicCavansProps {
   width: number
@@ -27,11 +27,11 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     graphicConfig: [],
   }
 
-  manager: Manager | null
+  graphicManager: GraphicManager | null
 
   constructor(props: GraphicCavansProps) {
     super(props)
-    this.manager = null
+    this.graphicManager = null
     this.state = {
       width: props.width,
       height: props.height,
@@ -61,11 +61,11 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
       '2d',
     ) as CanvasRenderingContext2D
 
-    const manager = (this.manager = new Manager(context2d))
+    const graphicManager = (this.graphicManager = new GraphicManager(context2d))
     const { graphicConfig } = this.props
     graphicConfig.forEach((config) => {
       const { graphicClass, props } = config
-      buildGraphic(manager, graphicClass, props)
+      buildGraphic(graphicManager, graphicClass, props)
     })
 
     window.addEventListener('resize', this.onWinResize, false)
@@ -93,10 +93,10 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
   }
 
   private onEnterFrame() {
-    const { manager } = this
-    if (manager) {
+    const { graphicManager } = this
+    if (graphicManager) {
       this.clearCanvas()
-      manager.onEnterFrame()
+      graphicManager.onEnterFrame()
     }
     window.requestAnimationFrame(this.onEnterFrame)
   }

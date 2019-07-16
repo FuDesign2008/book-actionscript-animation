@@ -4,13 +4,12 @@
  * @date  2019-07-12
  */
 import { GraphicComponent } from './GraphicComponent'
-import Manager from './Manager'
-
-type BaseConstructor = new (props: any) => GraphicComponent
+import GraphicComponentConstructor from './GraphicComponentConstructor'
+import GraphicManager from './GraphicManager'
 
 function buildGraphic(
-  manager: Manager,
-  graphicClass: BaseConstructor,
+  manager: GraphicManager,
+  graphicClass: GraphicComponentConstructor,
   props: any,
 ): GraphicComponent {
   const graphic: GraphicComponent = new graphicClass(props)

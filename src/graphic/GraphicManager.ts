@@ -6,7 +6,7 @@
 
 import { GraphicComponent } from './GraphicComponent'
 
-class Manager {
+class GraphicManager {
   private context2d: CanvasRenderingContext2D
   private graphicList: GraphicComponent[]
 
@@ -49,4 +49,4 @@ class Manager {
   }
 }
 
-export default Manager
+export default GraphicManager

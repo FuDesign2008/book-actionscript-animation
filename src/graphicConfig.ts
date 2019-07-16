@@ -6,14 +6,14 @@
 
 import CircularBall from './graphic/CircularBall'
 import EasingBall from './graphic/EasingBall'
-import { GraphicComponent } from './graphic/GraphicComponent'
+import EllipseBall from './graphic/EllipseBall'
+import GraphicComponentConstructor from './graphic/GraphicComponentConstructor'
 import OpacityBall from './graphic/OpacityBall'
 import Rocket from './graphic/Rocket'
 import ScalingBall from './graphic/ScalingBall'
-type BaseConstructor = new (props: any) => GraphicComponent
 
 interface GraphicConfigItem {
-  graphicClass: BaseConstructor
+  graphicClass: GraphicComponentConstructor
   props: any
 }
 
@@ -82,6 +82,16 @@ const graphicConfig: GraphicConfigItem[] = [
       radius: 150,
       x: 700,
       y: 200,
+    },
+  },
+  {
+    graphicClass: EllipseBall,
+    props: {
+      speed: 0.01,
+      radius: 100,
+      longRadius: 200,
+      x: 1000,
+      y: 250,
     },
   },
 ]
