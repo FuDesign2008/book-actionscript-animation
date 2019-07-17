@@ -111,28 +111,27 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     context2d.clearRect(0, 0, width, height)
   }
 
-  private drawImage() {
-    const { imageDrawer } = this
-    if (imageDrawer) {
-      imageDrawer.draw()
-    }
-  }
+  // private drawImage() {
+  // const { imageDrawer } = this
+  // if (imageDrawer) {
+  // imageDrawer.draw()
+  // }
+  // }
 
   private resetCanvas() {
     this.clearCanvas()
-    this.drawImage()
   }
 
   private onEnterFrame() {
-    const { graphicManager, filterManager } = this
+    const { graphicManager } = this
 
     this.resetCanvas()
     if (graphicManager) {
       graphicManager.onEnterFrame()
     }
-    if (filterManager) {
-      filterManager.onEnterFrame()
-    }
+    // if (filterManager) {
+    // filterManager.onEnterFrame()
+    // }
 
     window.requestAnimationFrame(this.onEnterFrame)
   }
