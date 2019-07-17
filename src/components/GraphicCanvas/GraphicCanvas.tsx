@@ -5,13 +5,18 @@
  */
 
 import React, { Component } from 'react'
+import { buildFilter } from '../../filter/factory'
+import FilterManager from '../../filter/FilterManager'
 import { buildGraphic } from '../../graphic/factory'
 import GraphicManager from '../../graphic/GraphicManager'
+import ImageDrawer from '../../image/ImageDrawer'
+import ViewImage from '../../view.jpg'
 
 interface GraphicCavansProps {
   width: number
   height: number
   graphicConfig: any[]
+  filterConfig: any[]
 }
 
 interface GraphicCanvasState {
@@ -25,13 +30,18 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     width: 400,
     height: 400,
     graphicConfig: [],
+    filterConfig: [],
   }
 
   graphicManager: GraphicManager | null
+  filterManager: FilterManager | null
+  imageDrawer: ImageDrawer | null
 
   constructor(props: GraphicCavansProps) {
     super(props)
     this.graphicManager = null
+    this.filterManager = null
+    this.imageDrawer = null
     this.state = {
       width: props.width,
       height: props.height,
@@ -61,11 +71,20 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
       '2d',
     ) as CanvasRenderingContext2D
 
+    this.imageDrawer = new ImageDrawer(context2d, ViewImage)
+
+    const { graphicConfig, filterConfig } = this.props
+
     const graphicManager = (this.graphicManager = new GraphicManager(context2d))
-    const { graphicConfig } = this.props
     graphicConfig.forEach((config) => {
       const { graphicClass, props } = config
       buildGraphic(graphicManager, graphicClass, props)
+    })
+
+    const filterManager = (this.filterManager = new FilterManager(context2d))
+    filterConfig.forEach((config) => {
+      const { filterClass, options } = config
+      buildFilter(filterManager, filterClass, options)
     })
 
     window.addEventListener('resize', this.onWinResize, false)
@@ -92,12 +111,29 @@ class GraphicCanvas extends Component<GraphicCavansProps, GraphicCanvasState> {
     context2d.clearRect(0, 0, width, height)
   }
 
+  private drawImage() {
+    const { imageDrawer } = this
+    if (imageDrawer) {
+      imageDrawer.draw()
+    }
+  }
+
+  private resetCanvas() {
+    this.clearCanvas()
+    this.drawImage()
+  }
+
   private onEnterFrame() {
-    const { graphicManager } = this
+    const { graphicManager, filterManager } = this
+
+    this.resetCanvas()
     if (graphicManager) {
-      this.clearCanvas()
       graphicManager.onEnterFrame()
     }
+    if (filterManager) {
+      filterManager.onEnterFrame()
+    }
+
     window.requestAnimationFrame(this.onEnterFrame)
   }
 }

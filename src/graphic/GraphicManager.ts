@@ -21,6 +21,9 @@ class GraphicManager {
       return
     }
     graphic.setContext2d(context2d)
+    graphic.remove = () => {
+      this.remove(graphic)
+    }
     graphicList.push(graphic)
     graphic.componentDidMount()
   }
@@ -33,6 +36,7 @@ class GraphicManager {
       })
       graphic.componentWillUnmount()
       graphic.setContext2d(null)
+      delete graphic.remove
       this.graphicList = newGraphicList
     }
   }

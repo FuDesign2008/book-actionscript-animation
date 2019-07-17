@@ -64,6 +64,10 @@ class GraphicComponent {
   componentWillUnmount() {
     // TODO
   }
+
+  remove() {
+    // TODO
+  }
 }
 
 export { GraphicComponent }
