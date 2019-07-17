@@ -11,6 +11,7 @@ import GrayFilterAlgorithm from './GrayFilterAlgorithm'
 import GrayFilterOptions from './GrayFilterOptions'
 
 // @see https://baike.baidu.com/item/%E7%81%B0%E5%BA%A6%E5%80%BC
+// @see https://github.com/aooy/blog/issues/4
 function makeGray(rgba: RGBA, algorithm: GrayFilterAlgorithm): number {
   let gray = 0
   const { r, g, b } = rgba
