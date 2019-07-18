@@ -10,6 +10,7 @@ import EllipseBall from './graphic/EllipseBall'
 import GraphicComponentConstructor from './graphic/GraphicComponentConstructor'
 import OpacityBall from './graphic/OpacityBall'
 import Rocket from './graphic/Rocket'
+import RotationBall from './graphic/RotationBall'
 import ScalingBall from './graphic/ScalingBall'
 
 interface GraphicConfigItem {
@@ -33,7 +34,9 @@ const graphicConfig: GraphicConfigItem[] = [
   {
     graphicClass: Rocket,
     props: {
-      easing: 0.2,
+      speed: 5,
+      x: 400,
+      y: 200,
     },
   },
   {
@@ -90,6 +93,15 @@ const graphicConfig: GraphicConfigItem[] = [
       speed: 0.01,
       radius: 100,
       longRadius: 200,
+      x: 1000,
+      y: 250,
+    },
+  },
+  {
+    graphicClass: RotationBall,
+    props: {
+      speed: 0.01,
+      radius: 20,
       x: 1000,
       y: 250,
     },

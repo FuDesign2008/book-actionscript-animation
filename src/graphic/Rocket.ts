@@ -3,98 +3,92 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import ArrowKeyState from '../key/ArrowKeyState'
-import {
-  createBlankArrowKeyState,
-  createStateFromKeyCode,
-} from '../key/keyState'
-import { GraphicComponent } from './GraphicComponent'
+import KeyInteractive from './KeyInteractive'
+import KeyInteractiveState from './KeyInteractiveState'
 
 interface RocketProps {
-  easing: number
-}
-
-interface RocketState extends ArrowKeyState {
+  speed: number
   x: number
   y: number
-  targetX: number
-  targetY: number
 }
 
-class Rocket extends GraphicComponent {
+interface RocketState extends KeyInteractiveState {
+  x: number
+  y: number
+}
+
+class Rocket extends KeyInteractive {
   constructor(props: RocketProps) {
     super(props)
-    const state: RocketState = {
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-      ...createBlankArrowKeyState(),
-    }
-    this.state = state
-
-    this.onKeyDown = this.onKeyDown.bind(this)
-    this.onKeyUp = this.onKeyUp.bind(this)
+    const { state } = this
+    const initState: RocketState = Object.assign({}, state, {
+      x: props.x || 0,
+      y: props.y || 0,
+    })
+    this.state = initState
   }
 
   onEnterFrame() {
     this.setState((state: RocketState, props: RocketProps) => {
-      const { x, y, targetX, targetY } = state
-      const { easing } = props
+      const { x, y } = state
+      const { speed } = props
+
+      let dx = 0
+      let dy = 0
+      const angle = this.convertToAngle(state)
+      if (angle >= 0) {
+        dy = speed * Math.sin((angle * Math.PI) / 180)
+        dx = speed * Math.cos((angle * Math.PI) / 180)
+      }
 
       return {
-        x: x + (targetX - x) * easing,
-        y: y + (targetY - y) * easing,
+        x: x + dx,
+        y: y + dy,
       }
     })
-  }
-
-  componentDidMount() {
-    this.bindEvnets()
-  }
-
-  componentWillUnmount() {
-    this.unbindEvents()
   }
 
   draw(context2d: CanvasRenderingContext2D, state: RocketState) {
     const { x, y } = state
     context2d.beginPath()
-    context2d.arc(x, y, 2, 0, Math.PI * 2, false)
+    context2d.arc(x, y, 5, 0, Math.PI * 2, false)
     context2d.fill()
   }
 
-  private bindEvnets() {
-    document.addEventListener('keydown', this.onKeyDown, false)
-    document.addEventListener('keyup', this.onKeyUp, false)
-  }
-
-  private unbindEvents() {
-    document.removeEventListener('keydown', this.onKeyDown, false)
-    document.removeEventListener('keyup', this.onKeyUp, false)
-  }
-
-  private updateKeyState(keyState: ArrowKeyState | null) {
-    if (!keyState) {
-      return
+  private convertToAngle(state: RocketState): number {
+    const clone: RocketState = Object.assign({}, state)
+    if (clone.left === true && clone.right === true) {
+      clone.left = false
+      clone.right = false
     }
-    this.setState(keyState)
-  }
 
-  private onKeyDown(event: KeyboardEvent) {
-    const state = createStateFromKeyCode(event.keyCode, true)
-    if (state) {
-      event.preventDefault()
-      this.updateKeyState(state)
+    if (clone.up === true && clone.down === true) {
+      clone.up = false
+      clone.down = false
     }
-  }
+    const { up, left, right, down } = clone
+    let angle = -1
+    if (up === true) {
+      angle = 270
+      if (left === true) {
+        angle = 270 - 45
+      } else if (right === true) {
+        angle = 270 + 45
+      }
+    } else if (down === true) {
+      angle = 90
+      if (left === true) {
+        angle = 90 + 45
+      } else if (right === true) {
+        angle = 90 - 45
+      }
+    } else if (left === true) {
+      angle = 180
+    } else if (right === true) {
+      angle = 0
+    }
 
-  private onKeyUp(event: KeyboardEvent) {
-    const state = createStateFromKeyCode(event.keyCode, false)
-    if (state) {
-      event.preventDefault()
-      this.updateKeyState(state)
-    }
+    return angle
   }
 }
 

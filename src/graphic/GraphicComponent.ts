@@ -24,15 +24,23 @@ class GraphicComponent {
 
   setState(data: object | ((state: object, props: object) => object | null)) {
     const { state, prevState, props } = this
-    let dataAsObject = null
+    let dataAsObject: any = null
     if (typeof data === 'function') {
       const thePrevSate = Object.assign({}, state, prevState)
       dataAsObject = data(thePrevSate, props)
     } else {
       dataAsObject = data
     }
-    const newState = Object.assign({}, state, dataAsObject)
-    this.state = newState
+    if (dataAsObject != null && typeof dataAsObject === 'object') {
+      const newState: any = Object.assign({}, state)
+      Object.keys(state).forEach((name: string) => {
+        const value = dataAsObject[name]
+        if (value !== undefined) {
+          newState[name] = value
+        }
+      })
+      this.state = newState
+    }
   }
 
   runDraw() {
