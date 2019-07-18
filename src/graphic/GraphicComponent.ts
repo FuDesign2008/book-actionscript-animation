@@ -55,6 +55,17 @@ class GraphicComponent {
     }
   }
 
+  getScreenSize() {
+    const { context2d } = this
+    if (context2d) {
+      const canvas: HTMLCanvasElement = context2d.canvas
+      return {
+        width: canvas.width,
+        height: canvas.height,
+      }
+    }
+  }
+
   draw(_context2d: CanvasRenderingContext2D, _state: object) {
     // do draw....
   }

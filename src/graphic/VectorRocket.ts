@@ -4,6 +4,7 @@
  * @date  2019-07-12
  */
 import Vector from '../common/Vector'
+import { gotoZero, recycle } from '../utils/compute'
 import KeyInteractive from './KeyInteractive'
 import KeyInteractiveState from './KeyInteractiveState'
 
@@ -47,15 +48,24 @@ class VectorRocket extends KeyInteractive {
         newSpeedX += vector.valueX
         newSpeedY += vector.valueY
       } else {
-        newSpeedX = this.gotoZero(speedX, friction)
-        newSpeedY = this.gotoZero(speedY, friction)
+        newSpeedX = gotoZero(speedX, friction)
+        newSpeedY = gotoZero(speedY, friction)
+      }
+
+      let newX = x + newSpeedX
+      let newY = y + newSpeedY
+      const size = this.getScreenSize()
+      if (size) {
+        const { width, height } = size
+        newX = recycle(newX, 0, width)
+        newY = recycle(newY, 0, height)
       }
 
       return {
         speedX: newSpeedX,
         speedY: newSpeedY,
-        x: x + newSpeedX,
-        y: y + newSpeedY,
+        x: newX,
+        y: newY,
       }
     })
   }
@@ -66,14 +76,6 @@ class VectorRocket extends KeyInteractive {
     context2d.fillStyle = 'rgb(234, 146, 100)'
     context2d.arc(x, y, 5, 0, Math.PI * 2, false)
     context2d.fill()
-  }
-
-  private gotoZero(value: number, delta: number): number {
-    if (Math.abs(value - 0) > delta) {
-      return value > 0 ? value - delta : value + delta
-    } else {
-      return 0
-    }
   }
 
   private convertToAngle(state: VectorRocketState): number {

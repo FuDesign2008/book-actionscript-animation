@@ -3,6 +3,7 @@
  * @author fuyg
  * @date  2019-07-12
  */
+import { recycle } from '../utils/compute'
 import KeyInteractive from './KeyInteractive'
 import KeyInteractiveState from './KeyInteractiveState'
 
@@ -41,9 +42,18 @@ class Rocket extends KeyInteractive {
         dx = speed * Math.cos((angle * Math.PI) / 180)
       }
 
+      let newX = x + dx
+      let newY = y + dy
+      const size = this.getScreenSize()
+      if (size) {
+        const { width, height } = size
+        newX = recycle(newX, 0, width)
+        newY = recycle(newY, 0, height)
+      }
+
       return {
-        x: x + dx,
-        y: y + dy,
+        x: newX,
+        y: newY,
       }
     })
   }
