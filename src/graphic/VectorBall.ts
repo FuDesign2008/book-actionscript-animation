@@ -8,25 +8,25 @@ import { gotoZero, recycle } from '../utils/compute'
 import KeyInteractive from './KeyInteractive'
 import KeyInteractiveState from './KeyInteractiveState'
 
-interface VectorRocketProps {
+interface VectorBallProps {
   accelaration: number
   friction: number
   x: number
   y: number
 }
 
-interface VectorRocketState extends KeyInteractiveState {
+interface VectorBallState extends KeyInteractiveState {
   speedX: number
   speedY: number
   x: number
   y: number
 }
 
-class VectorRocket extends KeyInteractive {
-  constructor(props: VectorRocketProps) {
+class VectorBall extends KeyInteractive {
+  constructor(props: VectorBallProps) {
     super(props)
     const { state } = this
-    const initState: VectorRocketState = Object.assign({}, state, {
+    const initState: VectorBallState = Object.assign({}, state, {
       speedX: 0,
       speedY: 0,
       x: props.x || 0,
@@ -36,7 +36,7 @@ class VectorRocket extends KeyInteractive {
   }
 
   onEnterFrame() {
-    this.setState((state: VectorRocketState, props: VectorRocketProps) => {
+    this.setState((state: VectorBallState, props: VectorBallProps) => {
       const { x, y, speedX, speedY } = state
       const { accelaration, friction } = props
 
@@ -70,7 +70,7 @@ class VectorRocket extends KeyInteractive {
     })
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: VectorRocketState) {
+  draw(context2d: CanvasRenderingContext2D, state: VectorBallState) {
     const { x, y } = state
     context2d.beginPath()
     context2d.fillStyle = 'rgb(234, 146, 100)'
@@ -78,8 +78,8 @@ class VectorRocket extends KeyInteractive {
     context2d.fill()
   }
 
-  private convertToAngle(state: VectorRocketState): number {
-    const clone: VectorRocketState = Object.assign({}, state)
+  private convertToAngle(state: VectorBallState): number {
+    const clone: VectorBallState = Object.assign({}, state)
     if (clone.left === true && clone.right === true) {
       clone.left = false
       clone.right = false
@@ -115,4 +115,4 @@ class VectorRocket extends KeyInteractive {
   }
 }
 
-export default VectorRocket
+export default VectorBall

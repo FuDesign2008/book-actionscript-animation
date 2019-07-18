@@ -4,20 +4,16 @@
  * @date  2019-07-16
  */
 
+import bouncingBallConfig from './bouncingBallConfig'
 import CircularBall from './graphic/CircularBall'
 import EasingBall from './graphic/EasingBall'
 import EllipseBall from './graphic/EllipseBall'
-import GraphicComponentConstructor from './graphic/GraphicComponentConstructor'
+import MovableBall from './graphic/MovableBall'
 import OpacityBall from './graphic/OpacityBall'
-import Rocket from './graphic/Rocket'
 import RotationBall from './graphic/RotationBall'
 import ScalingBall from './graphic/ScalingBall'
-import VectorRocket from './graphic/VectorRocket'
-
-interface GraphicConfigItem {
-  graphicClass: GraphicComponentConstructor
-  props: any
-}
+import VectorBall from './graphic/VectorBall'
+import GraphicConfigItem from './GraphicConfigItem'
 
 const graphicConfig: GraphicConfigItem[] = [
   {
@@ -33,7 +29,7 @@ const graphicConfig: GraphicConfigItem[] = [
     },
   },
   {
-    graphicClass: Rocket,
+    graphicClass: MovableBall,
     props: {
       speed: 2,
       x: 400,
@@ -41,12 +37,12 @@ const graphicConfig: GraphicConfigItem[] = [
     },
   },
   {
-    graphicClass: VectorRocket,
+    graphicClass: VectorBall,
     props: {
       accelaration: 0.05,
       friction: 0.02,
       x: 400,
-      y: 200,
+      y: 250,
     },
   },
   {
@@ -116,6 +112,7 @@ const graphicConfig: GraphicConfigItem[] = [
       y: 250,
     },
   },
+  ...bouncingBallConfig,
 ]
 
 export { graphicConfig }

@@ -7,22 +7,22 @@ import { recycle } from '../utils/compute'
 import KeyInteractive from './KeyInteractive'
 import KeyInteractiveState from './KeyInteractiveState'
 
-interface RocketProps {
+interface MovableBallProps {
   speed: number
   x: number
   y: number
 }
 
-interface RocketState extends KeyInteractiveState {
+interface MovableBallState extends KeyInteractiveState {
   x: number
   y: number
 }
 
-class Rocket extends KeyInteractive {
-  constructor(props: RocketProps) {
+class MovableBall extends KeyInteractive {
+  constructor(props: MovableBallProps) {
     super(props)
     const { state } = this
-    const initState: RocketState = Object.assign({}, state, {
+    const initState: MovableBallState = Object.assign({}, state, {
       x: props.x || 0,
       y: props.y || 0,
     })
@@ -30,7 +30,7 @@ class Rocket extends KeyInteractive {
   }
 
   onEnterFrame() {
-    this.setState((state: RocketState, props: RocketProps) => {
+    this.setState((state: MovableBallState, props: MovableBallProps) => {
       const { x, y } = state
       const { speed } = props
 
@@ -58,15 +58,15 @@ class Rocket extends KeyInteractive {
     })
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: RocketState) {
+  draw(context2d: CanvasRenderingContext2D, state: MovableBallState) {
     const { x, y } = state
     context2d.beginPath()
     context2d.arc(x, y, 5, 0, Math.PI * 2, false)
     context2d.fill()
   }
 
-  private convertToAngle(state: RocketState): number {
-    const clone: RocketState = Object.assign({}, state)
+  private convertToAngle(state: MovableBallState): number {
+    const clone: MovableBallState = Object.assign({}, state)
     if (clone.left === true && clone.right === true) {
       clone.left = false
       clone.right = false
@@ -102,4 +102,4 @@ class Rocket extends KeyInteractive {
   }
 }
 
-export default Rocket
+export default MovableBall
