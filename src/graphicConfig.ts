@@ -12,6 +12,7 @@ import OpacityBall from './graphic/OpacityBall'
 import Rocket from './graphic/Rocket'
 import RotationBall from './graphic/RotationBall'
 import ScalingBall from './graphic/ScalingBall'
+import VectorRocket from './graphic/VectorRocket'
 
 interface GraphicConfigItem {
   graphicClass: GraphicComponentConstructor
@@ -34,7 +35,16 @@ const graphicConfig: GraphicConfigItem[] = [
   {
     graphicClass: Rocket,
     props: {
-      speed: 5,
+      speed: 2,
+      x: 400,
+      y: 200,
+    },
+  },
+  {
+    graphicClass: VectorRocket,
+    props: {
+      accelaration: 0.05,
+      friction: 0.02,
       x: 400,
       y: 200,
     },
