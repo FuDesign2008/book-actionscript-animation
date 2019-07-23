@@ -6,10 +6,12 @@
 
 import React, { Component } from 'react'
 import { createStage } from '../core/factory'
+import SpriteConfigItem from '../SpriteConfigItem'
 
-interface GraphicCavansProps {
+interface CanvasStageProps {
   width: number
   height: number
+  spriteConfig: SpriteConfigItem[]
 }
 
 interface CanvasStageState {
@@ -17,13 +19,14 @@ interface CanvasStageState {
   height: number
 }
 
-class CanvasStage extends Component<GraphicCavansProps, CanvasStageState> {
-  static defaultProps: GraphicCavansProps = {
+class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
+  static defaultProps: CanvasStageProps = {
     width: 400,
     height: 400,
+    spriteConfig: [],
   }
 
-  constructor(props: GraphicCavansProps) {
+  constructor(props: CanvasStageProps) {
     super(props)
     this.state = {
       width: props.width,
@@ -49,8 +52,9 @@ class CanvasStage extends Component<GraphicCavansProps, CanvasStageState> {
     })
 
     const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
+    const { props } = this
 
-    createStage(canvas)
+    createStage(canvas, props.spriteConfig)
 
     window.addEventListener('resize', this.onWinResize, false)
   }

@@ -2,14 +2,15 @@ import React from 'react'
 import './App.css'
 // import GraphicCanvas from './components/GraphicCanvas'
 import CanvasStage from './components/CanvasStage'
+import logo from './logo.svg'
 // import filterConfig from './filterConfig'
 // import { graphicConfig } from './graphicConfig'
-import logo from './logo.svg'
+import { spriteConfig } from './spriteConfig'
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <CanvasStage />
+      <CanvasStage spriteConfig={spriteConfig} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

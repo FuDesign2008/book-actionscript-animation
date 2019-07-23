@@ -4,6 +4,7 @@
  * @date  2019-07-19
  */
 
+import SpriteConfigItem from '../SpriteConfigItem'
 import Sprite from './Sprite'
 import SpriteProps from './SpriteProps'
 import Stage from './Stage'
@@ -17,9 +18,13 @@ function createSprite(props: SpriteProps, stage?: Stage): Sprite {
   return sprite
 }
 
-function createStage(canvas: HTMLCanvasElement): Stage {
+function createStage(
+  canvas: HTMLCanvasElement,
+  spriteConfig: SpriteConfigItem[],
+): Stage {
   const props: StageProps = {
     canvas,
+    spriteConfig,
   }
   const stage = new Stage(props)
   return stage

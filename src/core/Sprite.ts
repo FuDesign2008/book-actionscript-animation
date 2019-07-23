@@ -7,6 +7,7 @@ import isEqual from 'lodash.isequal'
 import { clearCanvas, getBitmapData } from '../utils/context2d'
 import DrawableComponent from './DrawableComponent'
 import SpriteProps from './SpriteProps'
+import Stage from './Stage'
 
 interface SpriteState extends SpriteProps {
   angle: number
@@ -61,6 +62,7 @@ class Sprite extends DrawableComponent {
     })
   }
 
+  private stage: Stage | null
   private preRenderImageData: ImageData | null
   private preRenderContext: CanvasRenderingContext2D | null
 
@@ -77,6 +79,7 @@ class Sprite extends DrawableComponent {
     this.state = state
     this.preRenderImageData = null
     this.preRenderContext = null
+    this.stage = null
   }
 
   getDefaultProps(): SpriteProps | object {
@@ -94,6 +97,14 @@ class Sprite extends DrawableComponent {
   getPreRenderImageData() {
     const { preRenderImageData } = this
     return preRenderImageData
+  }
+
+  onPrerenderContextChange() {
+    this.preRenderImageData = null
+  }
+
+  setStage(stage: Stage | null) {
+    this.stage = stage
   }
 
   // action
@@ -123,6 +134,7 @@ class Sprite extends DrawableComponent {
       this.draw(preRenderContext, state, props)
       const imageData = getBitmapData(preRenderContext)
       this.preRenderImageData = imageData
+      this.prevState = state
       return true
     }
     return false
@@ -135,6 +147,14 @@ class Sprite extends DrawableComponent {
   // life cycle
   onEnterFrame() {
     // TODO
+  }
+
+  getStageSize() {
+    const { stage } = this
+    if (stage) {
+      const { size } = stage
+      return size
+    }
   }
 
   protected shouldRedraw(): boolean {

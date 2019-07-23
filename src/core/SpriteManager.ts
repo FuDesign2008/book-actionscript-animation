@@ -6,18 +6,22 @@
 
 import Component from './Component'
 import Sprite from './Sprite'
+import Stage from './Stage'
 
 interface SpriteManagerProps {
+  stage: Stage
   context2d: CanvasRenderingContext2D
   preRenderContext: CanvasRenderingContext2D
 }
 
 class SpriteManager extends Component {
   static create(
+    stage: Stage,
     context2d: CanvasRenderingContext2D,
     preRenderContext: CanvasRenderingContext2D,
   ) {
     const props: SpriteManagerProps = {
+      stage,
       context2d,
       preRenderContext,
     }
@@ -38,11 +42,14 @@ class SpriteManager extends Component {
       return
     }
     const props: SpriteManagerProps = this.props as SpriteManagerProps
-    const { preRenderContext } = props
+    const { preRenderContext, stage } = props
+
+    sprite.setStage(stage)
     sprite.setPreRenderCanvas(preRenderContext)
     sprite.remove = () => {
       this.remove(sprite)
     }
+
     spriteList.push(sprite)
     sprite.componentDidMount()
   }
@@ -54,8 +61,11 @@ class SpriteManager extends Component {
         return item !== sprite
       })
       sprite.componentWillUnmount()
+
+      sprite.setStage(null)
       sprite.setPreRenderCanvas(null)
       delete sprite.remove
+
       this.spriteList = newSpriteList
     }
   }
@@ -79,6 +89,15 @@ class SpriteManager extends Component {
 
       item.preRenderIfNeeded()
       this.renderSprite(item)
+    })
+  }
+
+  onPrerenderContextChange() {
+    const { spriteList } = this
+
+    spriteList.forEach((item: Sprite) => {
+      item.onPrerenderContextChange()
+      item.preRender()
     })
   }
 

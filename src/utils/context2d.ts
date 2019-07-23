@@ -16,7 +16,9 @@ function clearCanvas(context2d: CanvasRenderingContext2D | null): boolean {
 
 function getBitmapData(context2d: CanvasRenderingContext2D): ImageData {
   // TODO
-  return context2d.getImageData(0, 0, 100, 100)
+  const canvas: HTMLCanvasElement = context2d.canvas
+  const { width, height } = canvas
+  return context2d.getImageData(0, 0, width, height)
 }
 
 export { clearCanvas, getBitmapData }
