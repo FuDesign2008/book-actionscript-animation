@@ -136,10 +136,14 @@ class Sprite extends DrawableComponent {
     }
 
     if (this.draw && preRenderContext) {
+      preRenderContext.save()
       this.draw(preRenderContext, state, props)
+      preRenderContext.restore()
+
       const imageData = getBitmapData(preRenderContext)
       this.preRenderImageData = imageData
       this.prevState = state
+
       return true
     }
     return false

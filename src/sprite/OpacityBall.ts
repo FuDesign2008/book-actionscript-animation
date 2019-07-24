@@ -26,6 +26,8 @@ class OpacityBall extends Sprite {
     const initState: OpacityBallState = Object.assign(
       {
         angle: 0,
+        x: props.x || 0,
+        y: props.y || 0,
       },
       state as SpriteState,
     )
@@ -43,10 +45,14 @@ class OpacityBall extends Sprite {
     })
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: OpacityBallState) {
-    const { angle } = state
-    const { props } = this
-    const { x, y, radius, innerRadius } = props as OpacityBallProps
+  draw(
+    context2d: CanvasRenderingContext2D,
+    state: OpacityBallState,
+    props: OpacityBallProps,
+  ) {
+    const { angle, x, y } = state
+    const { radius, innerRadius } = props
+    console.log('draw:', x, y)
 
     const scaledRadius =
       innerRadius + Math.abs((radius - innerRadius) * Math.sin(angle))

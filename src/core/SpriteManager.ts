@@ -134,7 +134,9 @@ class SpriteManager extends Component {
     const props: SpriteManagerProps = this.props as SpriteManagerProps
     const { context2d } = props
     if (sprite && sprite.drawDirectly) {
+      context2d.save()
       sprite.drawDirectly(context2d)
+      context2d.restore()
     }
   }
 }

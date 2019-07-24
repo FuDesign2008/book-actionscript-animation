@@ -42,10 +42,13 @@ class CircularBall extends Sprite {
     })
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: CircularBallState) {
-    const { angle } = state
-    const { props } = this
-    const { radius, x, y } = props as CircularBallProps
+  draw(
+    context2d: CanvasRenderingContext2D,
+    state: CircularBallState,
+    props: CircularBallProps,
+  ) {
+    const { angle, x, y } = state
+    const { radius } = props
 
     // draw center pointer
     context2d.fillStyle = 'rgb(100, 200, 145)'

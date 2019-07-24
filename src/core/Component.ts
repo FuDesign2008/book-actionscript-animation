@@ -10,7 +10,7 @@ class Component {
   protected props: object
 
   constructor(props: any) {
-    this.props = Object.assign({}, props, this.getDefaultProps())
+    this.props = Object.assign({}, this.getDefaultProps(), props)
     this.prevState = {}
     this.state = {}
   }

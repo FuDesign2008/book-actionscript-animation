@@ -24,8 +24,8 @@ class EasingBall extends Sprite {
     const { state } = this
     const initState: EasingBallState = Object.assign(
       {
-        x: 0,
-        y: 0,
+        x: props.x || 0,
+        y: props.y || 0,
         targetX: 0,
         targetY: 0,
       },
