@@ -21,10 +21,12 @@ function createSprite(props: SpriteProps, stage?: Stage): Sprite {
 function createStage(
   canvas: HTMLCanvasElement,
   spriteConfig: SpriteConfigItem[],
+  usePreRender = false,
 ): Stage {
   const props: StageProps = {
     canvas,
     spriteConfig,
+    usePreRender,
   }
   const stage = new Stage(props)
   return stage

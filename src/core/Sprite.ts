@@ -115,11 +115,16 @@ class Sprite extends DrawableComponent {
     })
   }
 
-  preRenderIfNeeded() {
-    const shouldRedraw = this.shouldRedraw()
+  preRenderIfNeeded(force = false) {
+    const shouldRedraw = force || this.shouldRedraw()
     if (shouldRedraw) {
       this.preRender()
     }
+  }
+
+  drawDirectly(context2d: CanvasRenderingContext2D) {
+    const { props, state } = this
+    this.draw(context2d, state, props)
   }
 
   preRender(): boolean {

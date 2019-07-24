@@ -43,13 +43,17 @@ class Stage extends Component {
     }
     this.state = initialState
 
-    const preRenderCanvas = createCanvas(width, height)
-    this.preRenderContext = preRenderCanvas.getContext('2d')
+    this.preRenderContext = null
+    const theProps: StageProps = this.props as StageProps
+    if (theProps.usePreRender) {
+      const preRenderCanvas = createCanvas(width, height)
+      this.preRenderContext = preRenderCanvas.getContext('2d')
+    }
 
     this.spriteManager = null
     const { canvas } = props
     const context2d = canvas.getContext('2d')
-    if (context2d && this.preRenderContext) {
+    if (context2d) {
       this.spriteManager = SpriteManager.create(
         this,
         context2d,
@@ -77,15 +81,21 @@ class Stage extends Component {
   onEnterFrame() {
     this.checkState()
 
+    const props: StageProps = this.props as StageProps
+    const { usePreRender } = props
     const { spriteManager } = this
     if (spriteManager) {
+      spriteManager.onEnterFrame()
+
       const { state, prevState } = this
-      if (!isEqual(state, prevState)) {
-        spriteManager.onPrerenderContextChange()
+      if (usePreRender) {
+        if (!isEqual(state, prevState)) {
+          spriteManager.onPrerenderContextChange()
+        }
       }
       this.clear()
-      spriteManager.onEnterFrame()
-      this.prevState = state
+      spriteManager.runDraw()
+      this.prevState = Object.assign({}, state)
     }
 
     window.requestAnimationFrame(this.onEnterFrame)

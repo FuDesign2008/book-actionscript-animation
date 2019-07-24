@@ -3,11 +3,12 @@
  * @author fuyg
  * @date  2019-07-12
  */
+import KeyInteractive from '../core/KeyInteractive'
+import KeyInteractiveProps from '../core/KeyInteractiveProps'
+import KeyInteractiveState from '../core/KeyInteractiveState'
 import { recycle } from '../utils/compute'
-import KeyInteractive from './KeyInteractive'
-import KeyInteractiveState from './KeyInteractiveState'
 
-interface MovableBallProps {
+interface MovableBallProps extends KeyInteractiveProps {
   speed: number
   x: number
   y: number
@@ -22,10 +23,14 @@ class MovableBall extends KeyInteractive {
   constructor(props: MovableBallProps) {
     super(props)
     const { state } = this
-    const initState: MovableBallState = Object.assign({}, state, {
-      x: props.x || 0,
-      y: props.y || 0,
-    })
+    const initState: MovableBallState = Object.assign(
+      {},
+      state as KeyInteractiveState,
+      {
+        x: props.x || 0,
+        y: props.y || 0,
+      },
+    )
     this.state = initState
   }
 
@@ -44,7 +49,7 @@ class MovableBall extends KeyInteractive {
 
       let newX = x + dx
       let newY = y + dy
-      const size = this.getScreenSize()
+      const size = this.getStageSize()
       if (size) {
         const { width, height } = size
         newX = recycle(newX, 0, width)

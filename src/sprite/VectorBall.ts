@@ -4,11 +4,12 @@
  * @date  2019-07-12
  */
 import Vector from '../common/Vector'
+import KeyInteractive from '../core/KeyInteractive'
+import KeyInteractiveProps from '../core/KeyInteractiveProps'
+import KeyInteractiveState from '../core/KeyInteractiveState'
 import { gotoZero, recycle } from '../utils/compute'
-import KeyInteractive from './KeyInteractive'
-import KeyInteractiveState from './KeyInteractiveState'
 
-interface VectorBallProps {
+interface VectorBallProps extends KeyInteractiveProps {
   accelaration: number
   friction: number
   x: number
@@ -26,12 +27,16 @@ class VectorBall extends KeyInteractive {
   constructor(props: VectorBallProps) {
     super(props)
     const { state } = this
-    const initState: VectorBallState = Object.assign({}, state, {
-      speedX: 0,
-      speedY: 0,
-      x: props.x || 0,
-      y: props.y || 0,
-    })
+    const initState: VectorBallState = Object.assign(
+      {},
+      state as KeyInteractiveState,
+      {
+        speedX: 0,
+        speedY: 0,
+        x: props.x || 0,
+        y: props.y || 0,
+      },
+    )
     this.state = initState
   }
 
@@ -54,7 +59,7 @@ class VectorBall extends KeyInteractive {
 
       let newX = x + newSpeedX
       let newY = y + newSpeedY
-      const size = this.getScreenSize()
+      const size = this.getStageSize()
       if (size) {
         const { width, height } = size
         newX = recycle(newX, 0, width)

@@ -11,14 +11,14 @@ import Stage from './Stage'
 interface SpriteManagerProps {
   stage: Stage
   context2d: CanvasRenderingContext2D
-  preRenderContext: CanvasRenderingContext2D
+  preRenderContext: CanvasRenderingContext2D | null
 }
 
 class SpriteManager extends Component {
   static create(
     stage: Stage,
     context2d: CanvasRenderingContext2D,
-    preRenderContext: CanvasRenderingContext2D,
+    preRenderContext: CanvasRenderingContext2D | null = null,
   ) {
     const props: SpriteManagerProps = {
       stage,
@@ -72,6 +72,13 @@ class SpriteManager extends Component {
 
   onEnterFrame() {
     const { spriteList } = this
+    spriteList.forEach((item: Sprite) => {
+      item.onEnterFrame()
+    })
+  }
+
+  runDraw() {
+    const { spriteList } = this
     const cloneList: Sprite[] = [...spriteList]
 
     cloneList.sort((a: Sprite, b: Sprite) => {
@@ -83,11 +90,13 @@ class SpriteManager extends Component {
       return zIndexA < zIndexB ? -1 : 0
     })
 
-    cloneList.forEach((item: Sprite) => {
-      // life cycle
-      item.onEnterFrame()
+    const props: SpriteManagerProps = this.props as SpriteManagerProps
+    const { preRenderContext } = props
 
-      item.preRenderIfNeeded()
+    cloneList.forEach((item: Sprite) => {
+      if (preRenderContext) {
+        item.preRenderIfNeeded()
+      }
       this.renderSprite(item)
     })
   }
@@ -97,11 +106,20 @@ class SpriteManager extends Component {
 
     spriteList.forEach((item: Sprite) => {
       item.onPrerenderContextChange()
-      item.preRender()
     })
   }
 
   private renderSprite(sprite: Sprite) {
+    const props: SpriteManagerProps = this.props as SpriteManagerProps
+    const { preRenderContext } = props
+    if (preRenderContext) {
+      this.renderSpriteWithPreRender(sprite)
+    } else {
+      this.renderSpriteDirectly(sprite)
+    }
+  }
+
+  private renderSpriteWithPreRender(sprite: Sprite) {
     const imageData = sprite.getPreRenderImageData()
     const props: SpriteManagerProps = this.props as SpriteManagerProps
     const { context2d } = props
@@ -110,6 +128,14 @@ class SpriteManager extends Component {
     }
     const { x, y } = sprite
     context2d.putImageData(imageData, x, y)
+  }
+
+  private renderSpriteDirectly(sprite: Sprite) {
+    const props: SpriteManagerProps = this.props as SpriteManagerProps
+    const { context2d } = props
+    if (sprite && sprite.drawDirectly) {
+      sprite.drawDirectly(context2d)
+    }
   }
 }
 
