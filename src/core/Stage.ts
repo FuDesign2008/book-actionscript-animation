@@ -11,8 +11,6 @@ import Sprite from './Sprite'
 import SpriteManager from './SpriteManager'
 import StageProps from './StageProps'
 
-let count = 0
-
 interface StageState {
   width: number
   height: number
@@ -81,21 +79,22 @@ class Stage extends Component {
   }
 
   onEnterFrame() {
-    if (count > 500) {
-      return
-    }
-    count++
     this.checkState()
 
     const props: StageProps = this.props as StageProps
-    const { usePreRender } = props
-    const { spriteManager } = this
+    const { usePreRender, canvas } = props
+    const { spriteManager, preRenderContext } = this
     if (spriteManager) {
       spriteManager.onEnterFrame()
 
       const { state, prevState } = this
       if (usePreRender) {
         if (!isEqual(state, prevState)) {
+          if (preRenderContext && canvas) {
+            const preRenderCanvas = preRenderContext.canvas
+            preRenderCanvas.width = canvas.width
+            preRenderCanvas.height = canvas.height
+          }
           spriteManager.onPrerenderContextChange()
         }
       }
@@ -105,6 +104,18 @@ class Stage extends Component {
     }
 
     window.requestAnimationFrame(this.onEnterFrame)
+  }
+
+  updateSize(width: number, height: number) {
+    const props: StageProps = this.props as StageProps
+    const { canvas } = props
+    canvas.width = width
+    canvas.height = height
+
+    this.setState({
+      width,
+      height,
+    })
   }
 
   addSprite(sprite: Sprite) {

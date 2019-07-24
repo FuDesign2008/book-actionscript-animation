@@ -26,7 +26,7 @@ function createBouncingBallConfig(): SpriteConfigItem {
   }
 }
 
-const bouncingBallConfig: SpriteConfigItem[] = [...Array(20)].map(() => {
+const bouncingBallConfig: SpriteConfigItem[] = [...Array(5)].map(() => {
   const config = createBouncingBallConfig()
   return config
 })

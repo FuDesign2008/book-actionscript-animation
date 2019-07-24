@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react'
 import { createStage } from '../core/factory'
+import Stage from '../core/Stage'
 import SpriteConfigItem from '../SpriteConfigItem'
 
 interface CanvasStageProps {
@@ -15,8 +16,7 @@ interface CanvasStageProps {
 }
 
 interface CanvasStageState {
-  width: number
-  height: number
+  [key: string]: any
 }
 
 class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
@@ -26,41 +26,32 @@ class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
     spriteConfig: [],
   }
 
+  private stage: Stage | null
+
   constructor(props: CanvasStageProps) {
     super(props)
-    this.state = {
-      width: props.width,
-      height: props.height,
-    }
+    this.state = {}
     this.onWinResize = this.onWinResize.bind(this)
+    this.stage = null
   }
 
   render() {
-    const state: CanvasStageState = this.state
-    const styles = {
-      border: '1px solid #CCC',
-    }
+    const props: CanvasStageProps = this.props
     return (
       <div>
-        <canvas
-          ref="canvas"
-          width={state.width}
-          height={state.height}
-          style={styles}
-        />
+        <canvas ref="canvas" width={props.width} height={props.height} />
       </div>
     )
   }
 
   componentDidMount() {
-    this.matchWinSize()
-
     const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
     const { props } = this
 
-    createStage(canvas, props.spriteConfig, true)
+    this.stage = createStage(canvas, props.spriteConfig, false)
 
     window.addEventListener('resize', this.onWinResize, false)
+    this.matchWinSize()
   }
 
   private onWinResize() {
@@ -69,13 +60,10 @@ class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
 
   private matchWinSize() {
     const { innerWidth, innerHeight } = window
-    if (innerWidth) {
-      return
+    const { stage } = this
+    if (stage) {
+      stage.updateSize(innerWidth, innerHeight)
     }
-    this.setState({
-      width: innerWidth,
-      height: innerHeight,
-    })
   }
 }
 

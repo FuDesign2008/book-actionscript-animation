@@ -24,27 +24,15 @@ function findMinXPoint(
   data: Uint8ClampedArray,
   width: number,
   height: number,
-  xBlockCount: number,
-  yBlockCount: number,
-  blockWidth: number,
-  blockHeight: number,
 ): Point | null {
-  for (let xBlockIndex = 0; xBlockIndex < xBlockCount; xBlockIndex++) {
-    for (let yBlockIndex = 0; yBlockIndex < yBlockCount; yBlockIndex++) {
-      for (let xIndex = 0; xIndex < blockWidth; xIndex++) {
-        for (let yIndex = 0; yIndex < blockHeight; yIndex++) {
-          const absX = xBlockIndex * blockWidth + xIndex
-          const absY = yBlockIndex * blockHeight + yIndex
-          if (absX < width && absY < height) {
-            const alphaIndex = (absY * width + absX) * 4 + 3
-            const alpha = data[alphaIndex]
-            if (alpha > 0) {
-              return {
-                x: absX,
-                y: absY,
-              }
-            }
-          }
+  for (let xIndex = 0; xIndex < width; xIndex++) {
+    for (let yIndex = 0; yIndex < height; yIndex++) {
+      const alphaIndex = (yIndex * width + xIndex) * 4 + 3
+      const alpha = data[alphaIndex]
+      if (alpha > 0) {
+        return {
+          x: xIndex,
+          y: yIndex,
         }
       }
     }
@@ -55,32 +43,19 @@ function findMinXPoint(
 function findMinYPoint(
   data: Uint8ClampedArray,
   width: number,
-  _height: number,
-  xBlockCount: number,
-  _yBlockCount: number,
-  blockWidth: number,
-  blockHeight: number,
+  height: number,
   minXPoint: Point,
 ): Point {
-  const { y } = minXPoint
-  const blockIndexY = Math.ceil(y / blockHeight)
+  const { x } = minXPoint
 
-  for (let yBlockIndex = 0; yBlockIndex <= blockIndexY; yBlockIndex++) {
-    for (let xBlockIndex = 0; xBlockIndex < xBlockCount; xBlockIndex++) {
-      for (let yIndex = 0; yIndex < blockHeight; yIndex++) {
-        for (let xIndex = 0; xIndex < blockWidth; xIndex++) {
-          const absX = xBlockIndex * blockWidth + xIndex
-          const absY = yBlockIndex * blockHeight + yIndex
-          if (absY < y) {
-            const alphaIndex = (absY * width + absX) * 4 + 3
-            const alpha = data[alphaIndex]
-            if (alpha > 0) {
-              return {
-                x: absX,
-                y: absY,
-              }
-            }
-          }
+  for (let yIndex = 0; yIndex < height; yIndex++) {
+    for (let xIndex = x; xIndex < width; xIndex++) {
+      const alphaIndex = (yIndex * width + xIndex) * 4 + 3
+      const alpha = data[alphaIndex]
+      if (alpha > 0) {
+        return {
+          x: xIndex,
+          y: yIndex,
         }
       }
     }
@@ -93,42 +68,20 @@ function findMaxXPoint(
   data: Uint8ClampedArray,
   width: number,
   height: number,
-  xBlockCount: number,
-  yBlockCount: number,
-  blockWidth: number,
-  blockHeight: number,
   minXPoint: Point,
   minYPoint: Point,
 ): Point {
   const { x } = minXPoint
   const { y } = minYPoint
-  const blockIndexY = Math.floor(y / blockHeight)
-  const blockIndexX = Math.floor(x / blockWidth)
 
-  for (
-    let xBlockIndex = xBlockCount - 1;
-    xBlockIndex >= blockIndexX;
-    xBlockIndex--
-  ) {
-    for (
-      let yBlockIndex = yBlockCount - 1;
-      yBlockIndex >= blockIndexY;
-      yBlockIndex--
-    ) {
-      for (let xIndex = blockWidth - 1; xIndex >= 0; xIndex--) {
-        for (let yIndex = blockHeight - 1; yIndex >= 0; yIndex--) {
-          const absX = xBlockIndex * blockWidth + xIndex
-          const absY = yBlockIndex * blockHeight + yIndex
-          if (absX > x && absX < width && absY < height) {
-            const alphaIndex = (absY * width + absX) * 4 + 3
-            const alpha = data[alphaIndex]
-            if (alpha > 0) {
-              return {
-                x: absX,
-                y: absY,
-              }
-            }
-          }
+  for (let xIndex = width - 1; xIndex > x; xIndex--) {
+    for (let yIndex = height - 1; yIndex >= y; yIndex--) {
+      const alphaIndex = (yIndex * width + xIndex) * 4 + 3
+      const alpha = data[alphaIndex]
+      if (alpha > 0) {
+        return {
+          x: xIndex,
+          y: yIndex,
         }
       }
     }
@@ -141,42 +94,20 @@ function findMaxYPoint(
   data: Uint8ClampedArray,
   width: number,
   height: number,
-  xBlockCount: number,
-  yBlockCount: number,
-  blockWidth: number,
-  blockHeight: number,
   minXPoint: Point,
   minYPoint: Point,
 ): Point {
   const { y } = minYPoint
   const { x } = minXPoint
-  const blockIndexY = Math.floor(y / blockHeight)
-  const blockIndexX = Math.floor(x / blockWidth)
 
-  for (
-    let yBlockIndex = yBlockCount - 1;
-    yBlockIndex >= blockIndexY;
-    yBlockIndex--
-  ) {
-    for (
-      let xBlockIndex = xBlockCount - 1;
-      xBlockIndex >= blockIndexX;
-      xBlockIndex--
-    ) {
-      for (let yIndex = blockHeight - 1; yIndex >= 0; yIndex--) {
-        for (let xIndex = blockWidth - 1; xIndex >= 0; xIndex--) {
-          const absX = xBlockIndex * blockWidth + xIndex
-          const absY = yBlockIndex * blockHeight + yIndex
-          if (absY > y && absY < height && absX < width) {
-            const alphaIndex = (absY * width + absX) * 4 + 3
-            const alpha = data[alphaIndex]
-            if (alpha > 0) {
-              return {
-                x: absX,
-                y: absY,
-              }
-            }
-          }
+  for (let yIndex = height - 1; yIndex > y; yIndex--) {
+    for (let xIndex = width - 1; xIndex >= x; xIndex--) {
+      const alphaIndex = (yIndex * width + xIndex) * 4 + 3
+      const alpha = data[alphaIndex]
+      if (alpha > 0) {
+        return {
+          x: xIndex,
+          y: yIndex,
         }
       }
     }
@@ -189,58 +120,16 @@ function findContentRect(
   data: Uint8ClampedArray,
   width: number,
   height: number,
-  xBlockCount: number,
-  yBlockCount: number,
 ) {
-  const blockWidth = Math.ceil(width / xBlockCount)
-  const blockHeight = Math.ceil(height / yBlockCount)
-
-  const minXPoint = findMinXPoint(
-    data,
-    width,
-    height,
-    xBlockCount,
-    yBlockCount,
-    blockWidth,
-    blockHeight,
-  )
+  const minXPoint = findMinXPoint(data, width, height)
   if (!minXPoint) {
     return null
   }
 
-  const minYPoint = findMinYPoint(
-    data,
-    width,
-    height,
-    xBlockCount,
-    yBlockCount,
-    blockWidth,
-    blockHeight,
-    minXPoint,
-  )
+  const minYPoint = findMinYPoint(data, width, height, minXPoint)
 
-  const maxXPoint = findMaxXPoint(
-    data,
-    width,
-    height,
-    xBlockCount,
-    yBlockCount,
-    blockWidth,
-    blockHeight,
-    minXPoint,
-    minYPoint,
-  )
-  const maxYPoint = findMaxYPoint(
-    data,
-    width,
-    height,
-    xBlockCount,
-    yBlockCount,
-    blockWidth,
-    blockHeight,
-    minXPoint,
-    minYPoint,
-  )
+  const maxXPoint = findMaxXPoint(data, width, height, minXPoint, minYPoint)
+  const maxYPoint = findMaxYPoint(data, width, height, minXPoint, minYPoint)
 
   const rect: Rect = {
     x: minXPoint.x,
@@ -271,7 +160,7 @@ function getBitmapData(context2d: CanvasRenderingContext2D): RectImageData {
   const { width, height } = canvas
 
   const allImageData = context2d.getImageData(0, 0, width, height)
-  const rectInfo = findContentRect(allImageData.data, width, height, 3, 3)
+  const rectInfo = findContentRect(allImageData.data, width, height)
   if (rectInfo) {
     const { rect, minYPoint, minXPoint, maxXPoint, maxYPoint } = rectInfo
 
