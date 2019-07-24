@@ -120,14 +120,14 @@ class SpriteManager extends Component {
   }
 
   private renderSpriteWithPreRender(sprite: Sprite) {
-    const imageData = sprite.getPreRenderImageData()
+    const preRendered = sprite.getPreRenderImage()
     const props: SpriteManagerProps = this.props as SpriteManagerProps
     const { context2d } = props
-    if (!imageData || !context2d) {
+    if (!preRendered || !context2d) {
       return
     }
-    const { x, y } = sprite
-    context2d.putImageData(imageData, x, y)
+    const { rect, imageData } = preRendered
+    context2d.putImageData(imageData, rect.x, rect.y)
   }
 
   private renderSpriteDirectly(sprite: Sprite) {

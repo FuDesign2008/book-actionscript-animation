@@ -12,8 +12,6 @@ import { gotoZero } from '../utils/compute'
 interface BouncingBallProps extends KeyInteractiveProps {
   accelaration: number
   friction: number
-  x: number
-  y: number
   speedX: number
   speedY: number
 }

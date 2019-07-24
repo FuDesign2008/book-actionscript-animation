@@ -5,6 +5,7 @@
  */
 import isEqual from 'lodash.isequal'
 import { clearCanvas, getBitmapData } from '../utils/context2d'
+import RectImageData from '../utils/RectImageData'
 import DrawableComponent from './DrawableComponent'
 import SpriteProps from './SpriteProps'
 import Stage from './Stage'
@@ -12,7 +13,6 @@ import Stage from './Stage'
 interface SpriteState extends SpriteProps {
   angle: number
 }
-const selfDrawIgnoreStateNames: string[] = ['rotation']
 
 class Sprite extends DrawableComponent {
   get zIndex(): number {
@@ -63,7 +63,7 @@ class Sprite extends DrawableComponent {
   }
 
   private stage: Stage | null
-  private preRenderImageData: ImageData | null
+  private preRenderImage: RectImageData | null
   private preRenderContext: CanvasRenderingContext2D | null
 
   constructor(props: SpriteProps) {
@@ -77,7 +77,7 @@ class Sprite extends DrawableComponent {
       angle: 0,
     }
     this.state = state
-    this.preRenderImageData = null
+    this.preRenderImage = null
     this.preRenderContext = null
     this.stage = null
   }
@@ -94,13 +94,13 @@ class Sprite extends DrawableComponent {
     this.preRenderContext = context
   }
 
-  getPreRenderImageData() {
-    const { preRenderImageData } = this
-    return preRenderImageData
+  getPreRenderImage() {
+    const { preRenderImage } = this
+    return preRenderImage
   }
 
   onPrerenderContextChange() {
-    this.preRenderImageData = null
+    this.preRenderImage = null
   }
 
   setStage(stage: Stage | null) {
@@ -140,8 +140,8 @@ class Sprite extends DrawableComponent {
       this.draw(preRenderContext, state, props)
       preRenderContext.restore()
 
-      const imageData = getBitmapData(preRenderContext)
-      this.preRenderImageData = imageData
+      const rectImageData = getBitmapData(preRenderContext)
+      this.preRenderImage = rectImageData
       this.prevState = state
 
       return true
@@ -166,11 +166,17 @@ class Sprite extends DrawableComponent {
     }
   }
 
+  protected getSelfDrawIgnoredStateNames(): string[] {
+    const names: string[] = ['rotation', 'x', 'y']
+    return names
+  }
+
   protected shouldRedraw(): boolean {
     const { state, prevState } = this
     const cloneState: any = Object.assign({}, state)
     const clonePrevState: any = Object.assign({}, prevState)
-    selfDrawIgnoreStateNames.forEach((name: string) => {
+    const names = this.getSelfDrawIgnoredStateNames()
+    names.forEach((name: string) => {
       delete cloneState[name]
       delete clonePrevState[name]
     })
