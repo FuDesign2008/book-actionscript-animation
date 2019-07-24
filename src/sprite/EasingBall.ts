@@ -3,29 +3,35 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { GraphicComponent } from './GraphicComponent'
+import Sprite from '../core/Sprite'
+import SpriteProps from '../core/SpriteProps'
+import SpriteState from '../core/SpriteState'
 
-interface EasingBallProps {
+interface EasingBallProps extends SpriteProps {
   easing: number
 }
 
-interface EasingBallState {
+interface EasingBallState extends SpriteState {
   x: number
   y: number
   targetX: number
   targetY: number
 }
 
-class EasingBall extends GraphicComponent {
+class EasingBall extends Sprite {
   constructor(props: EasingBallProps) {
     super(props)
-    const state: EasingBallState = {
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-    }
-    this.state = state
+    const { state } = this
+    const initState: EasingBallState = Object.assign(
+      {
+        x: 0,
+        y: 0,
+        targetX: 0,
+        targetY: 0,
+      },
+      state as SpriteState,
+    )
+    this.state = initState
     this.onMouseMove = this.onMouseMove.bind(this)
   }
 

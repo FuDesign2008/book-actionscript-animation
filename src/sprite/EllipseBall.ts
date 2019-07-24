@@ -3,9 +3,11 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { GraphicComponent } from './GraphicComponent'
+import Sprite from '../core/Sprite'
+import SpriteProps from '../core/SpriteProps'
+import SpriteState from '../core/SpriteState'
 
-interface EllipseBallProps {
+interface EllipseBallProps extends SpriteProps {
   speed: number
   radius: number
   longRadius: number
@@ -13,17 +15,21 @@ interface EllipseBallProps {
   y: number
 }
 
-interface EllipseBallState {
+interface EllipseBallState extends SpriteState {
   angle: number
 }
 
-class EllipseBall extends GraphicComponent {
+class EllipseBall extends Sprite {
   constructor(props: EllipseBallProps) {
     super(props)
-    const state: EllipseBallState = {
-      angle: 0,
-    }
-    this.state = state
+    const { state } = this
+    const initState: EllipseBallState = Object.assign(
+      {
+        angle: 0,
+      },
+      state as SpriteState,
+    )
+    this.state = initState
   }
 
   onEnterFrame() {

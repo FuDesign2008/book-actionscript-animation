@@ -3,9 +3,11 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { GraphicComponent } from './GraphicComponent'
+import Sprite from '../core/Sprite'
+import SpriteProps from '../core/SpriteProps'
+import SpriteState from '../core/SpriteState'
 
-interface ScalingBallProps {
+interface ScalingBallProps extends SpriteProps {
   speed: number
   radius: number
   innerRadius: number
@@ -13,17 +15,21 @@ interface ScalingBallProps {
   y: number
 }
 
-interface ScalingBallState {
+interface ScalingBallState extends SpriteProps {
   angle: number
 }
 
-class ScalingBall extends GraphicComponent {
+class ScalingBall extends Sprite {
   constructor(props: ScalingBallProps) {
     super(props)
-    const state: ScalingBallState = {
-      angle: 0,
-    }
-    this.state = state
+    const { state } = this
+    const initState: ScalingBallState = Object.assign(
+      {
+        angle: 0,
+      },
+      state as SpriteState,
+    )
+    this.state = initState
   }
 
   onEnterFrame() {

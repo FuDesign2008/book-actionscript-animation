@@ -3,26 +3,32 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { GraphicComponent } from './GraphicComponent'
+import Sprite from '../core/Sprite'
+import SpriteProps from '../core/SpriteProps'
+import SpriteState from '../core/SpriteState'
 
-interface CircularBallProps {
+interface CircularBallProps extends SpriteProps {
   speed: number
   radius: number
   x: number
   y: number
 }
 
-interface CircularBallState {
+interface CircularBallState extends SpriteState {
   angle: number
 }
 
-class CircularBall extends GraphicComponent {
+class CircularBall extends Sprite {
   constructor(props: CircularBallProps) {
     super(props)
-    const state: CircularBallState = {
-      angle: 0,
-    }
-    this.state = state
+    const { state } = this
+    const initState: CircularBallState = Object.assign(
+      {
+        angle: 0,
+      },
+      state as SpriteState,
+    )
+    this.state = initState
   }
 
   onEnterFrame() {

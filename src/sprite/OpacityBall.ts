@@ -3,9 +3,11 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { GraphicComponent } from './GraphicComponent'
+import Sprite from '../core/Sprite'
+import SpriteProps from '../core/SpriteProps'
+import SpriteState from '../core/SpriteState'
 
-interface OpacityBallProps {
+interface OpacityBallProps extends SpriteProps {
   speed: number
   radius: number
   innerRadius: number
@@ -13,17 +15,21 @@ interface OpacityBallProps {
   y: number
 }
 
-interface OpacityBallState {
+interface OpacityBallState extends SpriteState {
   angle: number
 }
 
-class OpacityBall extends GraphicComponent {
+class OpacityBall extends Sprite {
   constructor(props: OpacityBallProps) {
     super(props)
-    const state: OpacityBallState = {
-      angle: 0,
-    }
-    this.state = state
+    const { state } = this
+    const initState: OpacityBallState = Object.assign(
+      {
+        angle: 0,
+      },
+      state as SpriteState,
+    )
+    this.state = initState
   }
 
   onEnterFrame() {

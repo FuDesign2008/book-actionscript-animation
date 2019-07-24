@@ -3,26 +3,32 @@
  * @author fuyg
  * @date  2019-07-12
  */
-import { GraphicComponent } from './GraphicComponent'
+import Sprite from '../core/Sprite'
+import SpriteProps from '../core/SpriteProps'
+import SpriteState from '../core/SpriteState'
 
-interface RocationBallProps {
+interface RocationBallProps extends SpriteProps {
   speed: number
   radius: number
   x: number
   y: number
 }
 
-interface RocationBallState {
+interface RocationBallState extends SpriteState {
   angle: number
 }
 
-class RocationBall extends GraphicComponent {
+class RocationBall extends Sprite {
   constructor(props: RocationBallProps) {
     super(props)
-    const state: RocationBallState = {
-      angle: 0,
-    }
-    this.state = state
+    const { state } = this
+    const initState: RocationBallState = Object.assign(
+      {
+        angle: 0,
+      },
+      state as SpriteState,
+    )
+    this.state = initState
   }
 
   onEnterFrame() {
