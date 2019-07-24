@@ -11,6 +11,8 @@ import Sprite from './Sprite'
 import SpriteManager from './SpriteManager'
 import StageProps from './StageProps'
 
+let count = 0
+
 interface StageState {
   width: number
   height: number
@@ -79,6 +81,10 @@ class Stage extends Component {
   }
 
   onEnterFrame() {
+    if (count > 500) {
+      return
+    }
+    count++
     this.checkState()
 
     const props: StageProps = this.props as StageProps

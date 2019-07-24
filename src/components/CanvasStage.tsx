@@ -37,30 +37,41 @@ class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
 
   render() {
     const state: CanvasStageState = this.state
+    const styles = {
+      border: '1px solid #CCC',
+    }
     return (
       <div>
-        <canvas ref="canvas" width={state.width} height={state.height} />
+        <canvas
+          ref="canvas"
+          width={state.width}
+          height={state.height}
+          style={styles}
+        />
       </div>
     )
   }
 
   componentDidMount() {
-    const { innerWidth, innerHeight } = window
-    this.setState({
-      width: innerWidth,
-      height: innerHeight,
-    })
+    this.matchWinSize()
 
     const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
     const { props } = this
 
-    createStage(canvas, props.spriteConfig)
+    createStage(canvas, props.spriteConfig, true)
 
     window.addEventListener('resize', this.onWinResize, false)
   }
 
   private onWinResize() {
+    this.matchWinSize()
+  }
+
+  private matchWinSize() {
     const { innerWidth, innerHeight } = window
+    if (innerWidth) {
+      return
+    }
     this.setState({
       width: innerWidth,
       height: innerHeight,

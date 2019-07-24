@@ -127,7 +127,9 @@ class SpriteManager extends Component {
       return
     }
     const { rect, imageData } = preRendered
-    context2d.putImageData(imageData, rect.x, rect.y)
+    if (rect && imageData) {
+      context2d.putImageData(imageData, rect.x, rect.y)
+    }
   }
 
   private renderSpriteDirectly(sprite: Sprite) {
