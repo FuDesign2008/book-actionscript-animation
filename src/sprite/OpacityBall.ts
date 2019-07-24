@@ -52,7 +52,6 @@ class OpacityBall extends Sprite {
   ) {
     const { angle, x, y } = state
     const { radius, innerRadius } = props
-    console.log('draw:', x, y)
 
     const scaledRadius =
       innerRadius + Math.abs((radius - innerRadius) * Math.sin(angle))
