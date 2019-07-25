@@ -142,8 +142,12 @@ class Sprite extends DrawableComponent {
       preRenderContext.restore()
 
       const preRendered = trimCanvas(preRenderContext.canvas)
+      if (preRendered) {
+        const cloneState = Object.assign({}, state)
+        preRendered.state = cloneState
+      }
       this.preRenderData = preRendered
-      this.prevState = state
+      this.prevState = Object.assign({}, state)
 
       return true
     }

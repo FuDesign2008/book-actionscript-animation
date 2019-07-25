@@ -126,7 +126,14 @@ class SpriteManager extends Component {
     if (!preRendered || !context2d) {
       return
     }
-    const { rect, canvas } = preRendered
+    const { x, y } = sprite
+    const { rect, canvas, state } = preRendered
+    let dx = 0
+    let dy = 0
+    if (state) {
+      dx = x - state.x
+      dy = y - state.y
+    }
     if (rect && canvas) {
       context2d.drawImage(
         canvas,
@@ -134,8 +141,8 @@ class SpriteManager extends Component {
         0,
         rect.width,
         rect.height,
-        rect.x,
-        rect.y,
+        rect.x + dx,
+        rect.y + dy,
         rect.width,
         rect.height,
       )
