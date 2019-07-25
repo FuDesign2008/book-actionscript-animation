@@ -183,6 +183,7 @@ function getBitmapData(context2d: CanvasRenderingContext2D): RectImageData {
         minYPoint,
         maxXPoint,
         maxYPoint,
+        imageData,
       )
     }
 
@@ -202,6 +203,7 @@ function debugGetBitmapData(
   minYPoint: Point,
   maxXPoint: Point,
   maxYPoint: Point,
+  imageData: ImageData | null,
 ) {
   const { width, height } = allImageData
   const canvas: HTMLCanvasElement = document.createElement(
@@ -223,6 +225,33 @@ function debugGetBitmapData(
     context2d.fillRect(maxXPoint.x, maxXPoint.y, 2, 2)
     context2d.fillRect(maxYPoint.x, maxYPoint.y, 2, 2)
   }
+  logWithCount.log(imageDataToString(imageData))
+}
+
+function imageDataToString(imageData: ImageData | null): string {
+  if (!imageData) {
+    return ''
+  }
+  const { data, width, height } = imageData
+  const arr: any[][] = []
+  for (let xIndex = 0; xIndex < width; xIndex++) {
+    if (!arr[xIndex]) {
+      arr[xIndex] = []
+    }
+    for (let yIndex = 0; yIndex < height; yIndex++) {
+      const index = (xIndex * width + yIndex) * 4
+
+      arr[xIndex][yIndex] = {
+        r: data[index],
+        g: data[index + 1],
+        b: data[index + 2],
+        a: data[index + 3],
+      }
+    }
+  }
+
+  const arrAsString = JSON.stringify(arr)
+  return arrAsString
 }
 
 export { clearCanvas, getBitmapData }

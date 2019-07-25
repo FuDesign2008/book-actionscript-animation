@@ -15,7 +15,19 @@ import ScalingBall from './sprite/ScalingBall'
 import VectorBall from './sprite/VectorBall'
 import SpriteConfigItem from './SpriteConfigItem'
 
+const isSimple = true
+
 const spriteConfig: SpriteConfigItem[] = [
+  {
+    classConstructor: ScalingBall,
+    props: {
+      speed: 0.02,
+      radius: 50,
+      innerRadius: 5,
+      x: 100,
+      y: 100,
+    },
+  },
   {
     classConstructor: EasingBall,
     props: {
@@ -43,16 +55,6 @@ const spriteConfig: SpriteConfigItem[] = [
       friction: 0.02,
       x: 400,
       y: 250,
-    },
-  },
-  {
-    classConstructor: ScalingBall,
-    props: {
-      speed: 0.02,
-      radius: 50,
-      innerRadius: 5,
-      x: 100,
-      y: 100,
     },
   },
   {
@@ -114,5 +116,9 @@ const spriteConfig: SpriteConfigItem[] = [
   },
   ...bouncingBallConfigSprite,
 ]
+
+if (isSimple) {
+  spriteConfig.length = 3
+}
 
 export { spriteConfig }

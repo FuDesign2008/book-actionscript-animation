@@ -58,7 +58,7 @@ class EasingBall extends Sprite {
   draw(context2d: CanvasRenderingContext2D, state: EasingBallState) {
     const { x, y } = state
     context2d.beginPath()
-    context2d.arc(x, y, 2, 0, Math.PI * 2, false)
+    context2d.arc(x, y, 5, 0, Math.PI * 2, false)
     context2d.fill()
   }
 

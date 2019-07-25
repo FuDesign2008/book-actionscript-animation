@@ -4,8 +4,9 @@
  * @date  2019-07-18
  */
 import isEqual from 'lodash.isequal'
-import { clearCanvas, getBitmapData } from '../utils/context2d'
-import RectImageData from '../utils/RectImageData'
+import { clearCanvas } from '../utils/context2d'
+import PreRenderData from '../utils/PreRenderData'
+import trimCanvas from '../utils/trimCanvas'
 import DrawableComponent from './DrawableComponent'
 import SpriteProps from './SpriteProps'
 import Stage from './Stage'
@@ -63,7 +64,7 @@ class Sprite extends DrawableComponent {
   }
 
   private stage: Stage | null
-  private preRenderImage: RectImageData | null
+  private preRenderData: PreRenderData | null
   private preRenderContext: CanvasRenderingContext2D | null
 
   constructor(props: SpriteProps) {
@@ -77,7 +78,7 @@ class Sprite extends DrawableComponent {
       angle: 0,
     }
     this.state = state
-    this.preRenderImage = null
+    this.preRenderData = null
     this.preRenderContext = null
     this.stage = null
   }
@@ -94,13 +95,13 @@ class Sprite extends DrawableComponent {
     this.preRenderContext = context
   }
 
-  getPreRenderImage() {
-    const { preRenderImage } = this
-    return preRenderImage
+  getPreRenderData() {
+    const { preRenderData } = this
+    return preRenderData
   }
 
   onPrerenderContextChange() {
-    this.preRenderImage = null
+    this.preRenderData = null
   }
 
   setStage(stage: Stage | null) {
@@ -140,8 +141,8 @@ class Sprite extends DrawableComponent {
       this.draw(preRenderContext, state, props)
       preRenderContext.restore()
 
-      const rectImageData = getBitmapData(preRenderContext)
-      this.preRenderImage = rectImageData
+      const preRendered = trimCanvas(preRenderContext.canvas)
+      this.preRenderData = preRendered
       this.prevState = state
 
       return true
