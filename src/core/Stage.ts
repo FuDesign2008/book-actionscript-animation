@@ -14,6 +14,7 @@ import StageProps from './StageProps'
 interface StageState {
   width: number
   height: number
+  isPlay: boolean
 }
 
 class Stage extends Component {
@@ -40,6 +41,7 @@ class Stage extends Component {
     const initialState: StageState = {
       width,
       height,
+      isPlay: true,
     }
     this.state = initialState
 
@@ -79,30 +81,34 @@ class Stage extends Component {
   }
 
   onEnterFrame() {
-    this.checkState()
+    const state: StageState = this.state as StageState
+    const { prevState } = this
+    const { isPlay } = state
+    if (isPlay) {
+      this.checkState()
 
-    const props: StageProps = this.props as StageProps
-    const { usePreRender, canvas } = props
-    const { spriteManager, preRenderContext } = this
-    if (spriteManager) {
-      spriteManager.onEnterFrame()
+      const props: StageProps = this.props as StageProps
+      const { usePreRender, canvas } = props
+      const { spriteManager, preRenderContext } = this
+      if (spriteManager) {
+        spriteManager.onEnterFrame()
 
-      const { state, prevState } = this
-      if (usePreRender) {
-        if (!isEqual(state, prevState)) {
-          if (preRenderContext && canvas) {
-            const preRenderCanvas = preRenderContext.canvas
-            preRenderCanvas.width = canvas.width
-            preRenderCanvas.height = canvas.height
+        if (usePreRender) {
+          if (!isEqual(state, prevState)) {
+            if (preRenderContext && canvas) {
+              const preRenderCanvas = preRenderContext.canvas
+              preRenderCanvas.width = canvas.width
+              preRenderCanvas.height = canvas.height
+            }
+            spriteManager.onPrerenderContextChange()
           }
-          spriteManager.onPrerenderContextChange()
         }
+        this.clear()
+        spriteManager.runDraw()
       }
-      this.clear()
-      spriteManager.runDraw()
-      this.prevState = Object.assign({}, state)
     }
 
+    this.prevState = Object.assign({}, state)
     window.requestAnimationFrame(this.onEnterFrame)
   }
 
@@ -130,6 +136,16 @@ class Stage extends Component {
     if (spriteManager) {
       spriteManager.remove(sprite)
     }
+  }
+
+  togglePlay() {
+    this.setState((state: StageState) => {
+      const { isPlay } = state
+      console.log('isPlay', !isPlay)
+      return {
+        isPlay: !isPlay,
+      }
+    })
   }
 
   private initializeSpriteConfig() {

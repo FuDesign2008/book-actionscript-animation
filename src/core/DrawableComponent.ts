@@ -7,9 +7,9 @@ import isEqual from 'lodash.isequal'
 import Component from './Component'
 
 class DrawableComponent extends Component {
-  constructor(props: any) {
-    super(props)
-  }
+  // constructor(props: any) {
+  // super(props)
+  // }
 
   protected draw(
     _context2d: CanvasRenderingContext2D,

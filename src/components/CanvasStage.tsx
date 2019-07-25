@@ -16,7 +16,7 @@ interface CanvasStageProps {
 }
 
 interface CanvasStageState {
-  [key: string]: any
+  isPlay: boolean
 }
 
 class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
@@ -30,15 +30,26 @@ class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
 
   constructor(props: CanvasStageProps) {
     super(props)
-    this.state = {}
+    this.state = {
+      isPlay: true,
+    }
     this.onWinResize = this.onWinResize.bind(this)
     this.stage = null
+    this.onTogglePlay = this.onTogglePlay.bind(this)
   }
 
   render() {
-    const props: CanvasStageProps = this.props
+    const { state, props } = this
+    const buttonStyles = {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+    } as React.CSSProperties
     return (
       <div>
+        <button onClick={this.onTogglePlay} style={buttonStyles}>
+          {state.isPlay ? '暂停' : '播放'}
+        </button>
         <canvas ref="canvas" width={props.width} height={props.height} />
       </div>
     )
@@ -48,10 +59,29 @@ class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
     const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
     const { props } = this
 
-    this.stage = createStage(canvas, props.spriteConfig, false)
+    this.stage = createStage(canvas, props.spriteConfig, true)
 
     window.addEventListener('resize', this.onWinResize, false)
     this.matchWinSize()
+  }
+
+  componentWillMount() {
+    // TODO destroy this.stage
+    // call this.stage.componentWillMount()
+    window.removeEventListener('resize', this.onWinResize, false)
+  }
+
+  private onTogglePlay() {
+    this.setState((state: CanvasStageState) => {
+      const { isPlay } = state
+      return {
+        isPlay: !isPlay,
+      }
+    })
+    const { stage } = this
+    if (stage) {
+      stage.togglePlay()
+    }
   }
 
   private onWinResize() {
