@@ -75,10 +75,7 @@ class SpriteManager extends Component {
   onEnterFrame() {
     const { spriteList } = this
     spriteList.forEach((item: Sprite) => {
-      const state = item.getState()
-      // console.log(state)
       item.onEnterFrame()
-      item.setPrevState(state)
     })
   }
 
@@ -99,10 +96,12 @@ class SpriteManager extends Component {
     const { preRenderBox } = props
 
     cloneList.forEach((item: Sprite) => {
+      const state = item.getState()
       if (preRenderBox) {
         item.preRenderIfNeeded()
       }
       this.renderSprite(item)
+      item.setPrevState(state)
     })
   }
 

@@ -15,7 +15,7 @@ import ScalingBall from './sprite/ScalingBall'
 import VectorBall from './sprite/VectorBall'
 import SpriteConfigItem from './SpriteConfigItem'
 
-const isSimple = true
+const isSimple = false
 
 const spriteConfig: SpriteConfigItem[] = [
   {
