@@ -7,8 +7,8 @@
 import Rect from './Rect'
 
 interface RectImageData {
-  rect: Rect | null
-  imageData: ImageData | null
+  rect: Rect
+  imageData: ImageData
 }
 
 export default RectImageData

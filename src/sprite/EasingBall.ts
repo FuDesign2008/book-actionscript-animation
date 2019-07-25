@@ -6,6 +6,7 @@
 import Sprite from '../core/Sprite'
 import SpriteProps from '../core/SpriteProps'
 import SpriteState from '../core/SpriteState'
+let count = 0
 
 interface EasingBallProps extends SpriteProps {
   easing: number
@@ -45,6 +46,7 @@ class EasingBall extends Sprite {
         y: y + (targetY - y) * easing,
       }
     })
+    // console.log(this.state)
   }
 
   componentDidMount() {
@@ -60,6 +62,13 @@ class EasingBall extends Sprite {
     context2d.beginPath()
     context2d.arc(x, y, 5, 0, Math.PI * 2, false)
     context2d.fill()
+  }
+
+  preRender(): boolean {
+    const result = Sprite.prototype.preRender.apply(this)
+    console.log('preRender...', count)
+    count++
+    return result
   }
 
   private bindEvnets() {

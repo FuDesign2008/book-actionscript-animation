@@ -4,26 +4,28 @@
  * @date  2019-07-12
  */
 
+import { rectTranslateWithCanvas } from '../utils/rectUtil'
 import Component from './Component'
+import PreRenderBox from './PreRenderBox'
 import Sprite from './Sprite'
 import Stage from './Stage'
 
 interface SpriteManagerProps {
   stage: Stage
   context2d: CanvasRenderingContext2D
-  preRenderContext: CanvasRenderingContext2D | null
+  preRenderBox: PreRenderBox | null
 }
 
 class SpriteManager extends Component {
   static create(
     stage: Stage,
     context2d: CanvasRenderingContext2D,
-    preRenderContext: CanvasRenderingContext2D | null = null,
+    preRenderBox: PreRenderBox | null = null,
   ) {
     const props: SpriteManagerProps = {
       stage,
       context2d,
-      preRenderContext,
+      preRenderBox,
     }
     const manager: SpriteManager = new SpriteManager(props)
     return manager
@@ -42,10 +44,10 @@ class SpriteManager extends Component {
       return
     }
     const props: SpriteManagerProps = this.props as SpriteManagerProps
-    const { preRenderContext, stage } = props
+    const { preRenderBox, stage } = props
 
     sprite.setStage(stage)
-    sprite.setPreRenderCanvas(preRenderContext)
+    sprite.setPreRenderBox(preRenderBox)
     sprite.remove = () => {
       this.remove(sprite)
     }
@@ -63,7 +65,7 @@ class SpriteManager extends Component {
       sprite.componentWillUnmount()
 
       sprite.setStage(null)
-      sprite.setPreRenderCanvas(null)
+      sprite.setPreRenderBox(null)
       delete sprite.remove
 
       this.spriteList = newSpriteList
@@ -73,7 +75,10 @@ class SpriteManager extends Component {
   onEnterFrame() {
     const { spriteList } = this
     spriteList.forEach((item: Sprite) => {
+      const state = item.getState()
+      // console.log(state)
       item.onEnterFrame()
+      item.setPrevState(state)
     })
   }
 
@@ -91,10 +96,10 @@ class SpriteManager extends Component {
     })
 
     const props: SpriteManagerProps = this.props as SpriteManagerProps
-    const { preRenderContext } = props
+    const { preRenderBox } = props
 
     cloneList.forEach((item: Sprite) => {
-      if (preRenderContext) {
+      if (preRenderBox) {
         item.preRenderIfNeeded()
       }
       this.renderSprite(item)
@@ -111,8 +116,8 @@ class SpriteManager extends Component {
 
   private renderSprite(sprite: Sprite) {
     const props: SpriteManagerProps = this.props as SpriteManagerProps
-    const { preRenderContext } = props
-    if (preRenderContext) {
+    const { preRenderBox } = props
+    if (preRenderBox) {
       this.renderSpriteWithPreRender(sprite)
     } else {
       this.renderSpriteDirectly(sprite)
@@ -127,26 +132,28 @@ class SpriteManager extends Component {
       return
     }
     const { x, y } = sprite
-    const { rect, canvas, state } = preRendered
-    let dx = 0
-    let dy = 0
-    if (state) {
-      dx = x - state.x
-      dy = y - state.y
-    }
-    if (rect && canvas) {
-      context2d.drawImage(
-        canvas,
-        0,
-        0,
-        rect.width,
-        rect.height,
-        rect.x + dx,
-        rect.y + dy,
-        rect.width,
-        rect.height,
-      )
-    }
+    const { sourceRect, targetRect, canvas, state } = preRendered
+    const dx = x - state.x
+    const dy = y - state.y
+    const sourceRectTranslated = rectTranslateWithCanvas(
+      dx,
+      dy,
+      sourceRect,
+      canvas,
+    )
+    const { width, height } = sourceRectTranslated
+
+    context2d.drawImage(
+      canvas,
+      sourceRectTranslated.x,
+      sourceRectTranslated.y,
+      width,
+      height,
+      targetRect.x + dx,
+      targetRect.y + dy,
+      width,
+      height,
+    )
   }
 
   private renderSpriteDirectly(sprite: Sprite) {

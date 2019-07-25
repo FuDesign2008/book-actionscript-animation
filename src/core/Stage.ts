@@ -5,8 +5,8 @@
  */
 
 import isEqual from 'lodash.isequal'
-import { createCanvas } from '../utils/canvas'
 import Component from './Component'
+import PreRenderBox from './PreRenderBox'
 import Sprite from './Sprite'
 import SpriteManager from './SpriteManager'
 import StageProps from './StageProps'
@@ -31,7 +31,7 @@ class Stage extends Component {
 
   private spriteManager: SpriteManager | null
 
-  private preRenderContext: CanvasRenderingContext2D | null
+  private preRenderBox: PreRenderBox | null
 
   constructor(props: StageProps) {
     super(props)
@@ -45,22 +45,18 @@ class Stage extends Component {
     }
     this.state = initialState
 
-    this.preRenderContext = null
+    this.preRenderBox = null
     const theProps: StageProps = this.props as StageProps
     if (theProps.usePreRender) {
-      const preRenderCanvas = createCanvas(width, height)
-      this.preRenderContext = preRenderCanvas.getContext('2d')
+      this.preRenderBox = new PreRenderBox(width, height)
     }
 
     this.spriteManager = null
     const { canvas } = props
     const context2d = canvas.getContext('2d')
     if (context2d) {
-      this.spriteManager = SpriteManager.create(
-        this,
-        context2d,
-        this.preRenderContext,
-      )
+      const { preRenderBox } = this
+      this.spriteManager = SpriteManager.create(this, context2d, preRenderBox)
     }
 
     this.onEnterFrame = this.onEnterFrame.bind(this)
@@ -89,16 +85,14 @@ class Stage extends Component {
 
       const props: StageProps = this.props as StageProps
       const { usePreRender, canvas } = props
-      const { spriteManager, preRenderContext } = this
+      const { spriteManager, preRenderBox } = this
       if (spriteManager) {
         spriteManager.onEnterFrame()
 
         if (usePreRender) {
           if (!isEqual(state, prevState)) {
-            if (preRenderContext && canvas) {
-              const preRenderCanvas = preRenderContext.canvas
-              preRenderCanvas.width = canvas.width
-              preRenderCanvas.height = canvas.height
+            if (preRenderBox && canvas) {
+              preRenderBox.updateSize(canvas.width, canvas.height)
             }
             spriteManager.onPrerenderContextChange()
           }
@@ -141,7 +135,6 @@ class Stage extends Component {
   togglePlay() {
     this.setState((state: StageState) => {
       const { isPlay } = state
-      console.log('isPlay', !isPlay)
       return {
         isPlay: !isPlay,
       }

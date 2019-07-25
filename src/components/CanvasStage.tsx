@@ -59,7 +59,7 @@ class CanvasStage extends Component<CanvasStageProps, CanvasStageState> {
     const canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement
     const { props } = this
 
-    this.stage = createStage(canvas, props.spriteConfig, false)
+    this.stage = createStage(canvas, props.spriteConfig, true)
 
     window.addEventListener('resize', this.onWinResize, false)
     this.matchWinSize()

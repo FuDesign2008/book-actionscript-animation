@@ -11,11 +11,7 @@ class DrawableComponent extends Component {
   // super(props)
   // }
 
-  protected draw(
-    _context2d: CanvasRenderingContext2D,
-    _state: object,
-    _props?: object,
-  ) {
+  draw(_context2d: CanvasRenderingContext2D, _state: object, _props?: object) {
     // do draw....
   }
 

@@ -155,7 +155,9 @@ function findContentRect(
   }
 }
 
-function getBitmapData(context2d: CanvasRenderingContext2D): RectImageData {
+function getBitmapData(
+  context2d: CanvasRenderingContext2D,
+): RectImageData | null {
   const canvas: HTMLCanvasElement = context2d.canvas
   const { width, height } = canvas
 
@@ -163,10 +165,16 @@ function getBitmapData(context2d: CanvasRenderingContext2D): RectImageData {
   const rectInfo = findContentRect(allImageData.data, width, height)
   if (rectInfo) {
     const { rect } = rectInfo
+    if (!rect) {
+      return null
+    }
 
-    const imageData = rect
-      ? context2d.getImageData(rect.x, rect.y, rect.width, rect.height)
-      : null
+    const imageData = context2d.getImageData(
+      rect.x,
+      rect.y,
+      rect.width,
+      rect.height,
+    )
 
     const rectImageData: RectImageData = {
       rect,
@@ -188,12 +196,8 @@ function getBitmapData(context2d: CanvasRenderingContext2D): RectImageData {
     // }
 
     return rectImageData
-  } else {
-    return {
-      rect: null,
-      imageData: null,
-    }
   }
+  return null
 }
 
 // function debugGetBitmapData(

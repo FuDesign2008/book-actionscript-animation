@@ -4,10 +4,9 @@
  * @date  2019-07-18
  */
 import isEqual from 'lodash.isequal'
-import { clearCanvas } from '../utils/context2d'
-import PreRenderData from '../utils/PreRenderData'
-import trimCanvas from '../utils/trimCanvas'
 import DrawableComponent from './DrawableComponent'
+import PreRenderBox from './PreRenderBox'
+import PreRenderData from './PreRenderData'
 import SpriteProps from './SpriteProps'
 import Stage from './Stage'
 
@@ -65,7 +64,7 @@ class Sprite extends DrawableComponent {
 
   private stage: Stage | null
   private preRenderData: PreRenderData | null
-  private preRenderContext: CanvasRenderingContext2D | null
+  private preRenderBox: PreRenderBox | null
 
   constructor(props: SpriteProps) {
     super(props)
@@ -79,7 +78,7 @@ class Sprite extends DrawableComponent {
     }
     this.state = state
     this.preRenderData = null
-    this.preRenderContext = null
+    this.preRenderBox = null
     this.stage = null
   }
 
@@ -91,8 +90,8 @@ class Sprite extends DrawableComponent {
     }
   }
 
-  setPreRenderCanvas(context: CanvasRenderingContext2D | null) {
-    this.preRenderContext = context
+  setPreRenderBox(box: PreRenderBox | null) {
+    this.preRenderBox = box
   }
 
   getPreRenderData() {
@@ -129,29 +128,13 @@ class Sprite extends DrawableComponent {
   }
 
   preRender(): boolean {
-    const { preRenderContext, state, props } = this
-
-    const isSuccess = clearCanvas(preRenderContext)
-    if (!isSuccess) {
+    const { preRenderBox } = this
+    if (!preRenderBox) {
       return false
     }
-
-    if (this.draw && preRenderContext) {
-      preRenderContext.save()
-      this.draw(preRenderContext, state, props)
-      preRenderContext.restore()
-
-      const preRendered = trimCanvas(preRenderContext.canvas)
-      if (preRendered) {
-        const cloneState = Object.assign({}, state)
-        preRendered.state = cloneState
-      }
-      this.preRenderData = preRendered
-      this.prevState = Object.assign({}, state)
-
-      return true
-    }
-    return false
+    const data = preRenderBox.renderDrawable(this)
+    this.preRenderData = data
+    return data ? true : false
   }
 
   remove() {
@@ -177,7 +160,13 @@ class Sprite extends DrawableComponent {
   }
 
   protected shouldRedraw(): boolean {
-    const { state, prevState } = this
+    const { state, prevState, preRenderBox, preRenderData } = this
+    if (!preRenderBox) {
+      return false
+    }
+    if (!preRenderData) {
+      return true
+    }
     const cloneState: any = Object.assign({}, state)
     const clonePrevState: any = Object.assign({}, prevState)
     const names = this.getSelfDrawIgnoredStateNames()

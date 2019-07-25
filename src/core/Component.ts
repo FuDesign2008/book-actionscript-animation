@@ -23,8 +23,8 @@ class Component {
     const { state, prevState, props } = this
     let dataAsObject: any = null
     if (typeof data === 'function') {
-      const thePrevSate = Object.assign({}, state, prevState)
-      dataAsObject = data(thePrevSate, props)
+      const thePreState = Object.assign({}, state, prevState)
+      dataAsObject = data(thePreState, props)
     } else {
       dataAsObject = data
     }
@@ -38,6 +38,22 @@ class Component {
       })
       this.state = newState
     }
+  }
+
+  getState(): object {
+    const { state } = this
+    const clone = Object.assign({}, state)
+    return clone
+  }
+
+  getProps(): object {
+    const { props } = this
+    const clone = Object.assign({}, props)
+    return clone
+  }
+
+  setPrevState(state: object) {
+    this.prevState = state
   }
 
   componentDidMount() {

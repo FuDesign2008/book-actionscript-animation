@@ -118,7 +118,7 @@ const spriteConfig: SpriteConfigItem[] = [
 ]
 
 if (isSimple) {
-  spriteConfig.length = 3
+  spriteConfig.length = 5
 }
 
 export { spriteConfig }

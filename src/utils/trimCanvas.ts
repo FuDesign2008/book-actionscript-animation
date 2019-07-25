@@ -9,9 +9,9 @@
  */
 
 import { getBitmapData } from './context2d'
-import PreRenderData from './PreRenderData'
+import RectCanvas from './RectCanvas'
 
-function trimCanvas(c: HTMLCanvasElement): PreRenderData | null {
+function trimCanvas(c: HTMLCanvasElement): RectCanvas | null {
   const ctx = c.getContext('2d')
   if (!ctx) {
     return null
@@ -23,10 +23,10 @@ function trimCanvas(c: HTMLCanvasElement): PreRenderData | null {
   }
 
   const trimed = getBitmapData(ctx)
-  const { rect, imageData } = trimed
-  if (!rect || !imageData) {
+  if (!trimed) {
     return null
   }
+  const { rect, imageData } = trimed
 
   copyCanvas.width = rect.width
   copyCanvas.height = rect.height
