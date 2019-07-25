@@ -63,6 +63,13 @@ class MovableBall extends KeyInteractive {
     })
   }
 
+  getSelfDrawIgnoredStateNames(): string[] {
+    const names = KeyInteractive.prototype.getSelfDrawIgnoredStateNames.apply(
+      this,
+    )
+    return [...names, 'speed']
+  }
+
   draw(context2d: CanvasRenderingContext2D, state: MovableBallState) {
     const { x, y } = state
     context2d.beginPath()

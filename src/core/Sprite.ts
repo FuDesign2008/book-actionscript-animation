@@ -154,7 +154,7 @@ class Sprite extends DrawableComponent {
     }
   }
 
-  protected getSelfDrawIgnoredStateNames(): string[] {
+   getSelfDrawIgnoredStateNames(): string[] {
     const names: string[] = ['rotation', 'x', 'y']
     return names
   }

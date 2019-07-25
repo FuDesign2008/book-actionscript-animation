@@ -38,6 +38,11 @@ class KeyInteractive extends Sprite {
     this.unbindEvents()
   }
 
+  getSelfDrawIgnoredStateNames(): string[] {
+    const names = Sprite.prototype.getSelfDrawIgnoredStateNames.apply(this)
+    return [...names, 'left', 'right', 'up', 'down']
+  }
+
   private bindEvnets() {
     document.addEventListener('keydown', this.onKeyDown, false)
     document.addEventListener('keyup', this.onKeyUp, false)
