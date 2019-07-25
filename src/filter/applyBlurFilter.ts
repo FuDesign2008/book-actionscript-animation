@@ -4,8 +4,8 @@
  * @author fuyg
  * @date  2019-07-17
  */
+import RGBA from '../types/RGBA'
 import { getRgba, putRgba } from '../utils/imageData'
-import RGBA from '../utils/RGBA'
 import BlurFilter from './BlurFilter'
 import BlurFilterOptions from './BlurFilterOptions'
 

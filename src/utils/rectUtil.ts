@@ -4,7 +4,7 @@
  * @date  2019-07-25
  */
 
-import Rect from './Rect'
+import Rect from '../types/Rect'
 
 function intersectionLineSingle(
   start: number,

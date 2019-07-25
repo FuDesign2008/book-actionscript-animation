@@ -22,11 +22,12 @@ function createBouncingBallConfig(): SpriteConfigItem {
       y: 150,
       speedX,
       speedY,
+      radius: Math.round(Math.random() * 50) + 5,
     },
   }
 }
 
-const bouncingBallConfig: SpriteConfigItem[] = [...Array(5)].map(() => {
+const bouncingBallConfig: SpriteConfigItem[] = [...Array(10)].map(() => {
   const config = createBouncingBallConfig()
   return config
 })

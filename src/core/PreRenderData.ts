@@ -4,7 +4,7 @@
  * @date  2019-07-24
  */
 
-import Rect from '../utils/Rect'
+import Rect from '../types/Rect'
 
 interface PreRenderData {
   sourceRect: Rect

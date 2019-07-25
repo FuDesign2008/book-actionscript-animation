@@ -3,7 +3,7 @@
  * @author fuyg
  * @date  2019-07-17
  */
-import RGBA from './RGBA'
+import RGBA from '../types/RGBA'
 
 function getRgba(
   data: Uint8ClampedArray,

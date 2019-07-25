@@ -8,8 +8,8 @@
  * @date  2019-07-25
  */
 
+import RectCanvas from '../types/RectCanvas'
 import { getBitmapData } from './context2d'
-import RectCanvas from './RectCanvas'
 
 function trimCanvas(c: HTMLCanvasElement): RectCanvas | null {
   const ctx = c.getContext('2d')

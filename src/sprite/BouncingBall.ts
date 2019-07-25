@@ -14,6 +14,7 @@ interface BouncingBallProps extends KeyInteractiveProps {
   friction: number
   speedX: number
   speedY: number
+  radius: number
 }
 
 interface BouncingBallState extends KeyInteractiveState {
@@ -43,7 +44,7 @@ class BouncingBall extends KeyInteractive {
   onEnterFrame() {
     this.setState((state: BouncingBallState, props: BouncingBallProps) => {
       const { x, y, speedX, speedY } = state
-      const { accelaration, friction } = props
+      const { accelaration, friction, radius } = props
 
       let newSpeedX = speedX
       let newSpeedY = speedY
@@ -62,11 +63,11 @@ class BouncingBall extends KeyInteractive {
       const size = this.getStageSize()
       if (size) {
         const { width, height } = size
-        if (newX > width || newX < 0) {
+        if (newX + radius > width || newX - radius < 0) {
           newSpeedX = 0 - newSpeedX
           newX = x + newSpeedX
         }
-        if (newY > height || newY < 0) {
+        if (newY + radius > height || newY - radius < 0) {
           newSpeedY = 0 - newSpeedY
           newY = y + newSpeedY
         }
@@ -81,11 +82,16 @@ class BouncingBall extends KeyInteractive {
     })
   }
 
-  draw(context2d: CanvasRenderingContext2D, state: BouncingBallState) {
+  draw(
+    context2d: CanvasRenderingContext2D,
+    state: BouncingBallState,
+    props: BouncingBallProps,
+  ) {
     const { x, y } = state
+    const { radius } = props
     context2d.beginPath()
     context2d.fillStyle = 'rgb(234, 146, 100)'
-    context2d.arc(x, y, 5, 0, Math.PI * 2, false)
+    context2d.arc(x, y, radius, 0, Math.PI * 2, false)
     context2d.fill()
   }
 

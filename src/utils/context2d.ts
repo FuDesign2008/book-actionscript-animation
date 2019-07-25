@@ -4,9 +4,9 @@
  * @date  2019-07-18
  */
 // import LogWithCount from './LogWithCount'
-import Point from './Point'
-import Rect from './Rect'
-import RectImageData from './RectImageData'
+import Point from '../types/Point'
+import Rect from '../types/Rect'
+import RectImageData from '../types/RectImageData'
 
 // const logWithCount = new LogWithCount(100)
 
