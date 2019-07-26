@@ -78,14 +78,14 @@ class HitTestBalls extends Sprite {
         }
       })
     })
-    const dx = Math.abs(a.x - b.x)
-    const dy = Math.abs(a.y - b.y)
+    const dx = a.x - b.x
+    const dy = a.y - b.y
     const distance = Math.sqrt(dx * dx + dy * dy)
     const delta = a.radius + b.radius - distance
     if (delta <= 0) {
       return
     }
-    const angle = Math.atan((a.y - b.y) / (a.x - b.x))
+    const angle = Math.atan2(dy, dx)
     const deltaX = delta * Math.sin(angle)
     const deltaY = delta * Math.cos(angle)
     a.setState({
