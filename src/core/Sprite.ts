@@ -4,6 +4,7 @@
  * @date  2019-07-18
  */
 import isEqual from 'lodash.isequal'
+import { rectTranslateWithCanvas } from '../utils/rectUtil'
 import DrawableComponent from './DrawableComponent'
 import PreRenderBox from './PreRenderBox'
 import PreRenderData from './PreRenderData'
@@ -39,6 +40,22 @@ class Sprite extends DrawableComponent {
     })
   }
 
+  get context2d(): CanvasRenderingContext2D | null {
+    const { stage } = this
+    if (!stage) {
+      return null
+    }
+    return stage.context2d
+  }
+
+  get preRenderBox(): PreRenderBox | null {
+    const { stage } = this
+    if (!stage) {
+      return null
+    }
+    return stage.preRenderBox
+  }
+
   get y(): number {
     const state: SpriteState = this.state as SpriteState
     const { y } = state
@@ -62,9 +79,11 @@ class Sprite extends DrawableComponent {
     })
   }
 
+  parent: Sprite | null
+
   private stage: Stage | null
   private preRenderData: PreRenderData | null
-  private preRenderBox: PreRenderBox | null
+  private children: Sprite[]
 
   constructor(props: SpriteProps) {
     super(props)
@@ -78,8 +97,37 @@ class Sprite extends DrawableComponent {
     }
     this.state = state
     this.preRenderData = null
-    this.preRenderBox = null
     this.stage = null
+    this.parent = null
+    this.children = []
+  }
+
+  addChild(sprite: Sprite) {
+    const { children, stage } = this
+    if (children.includes(sprite)) {
+      return
+    }
+
+    sprite.setStage(stage)
+
+    children.push(sprite)
+    sprite.parent = this
+    sprite.componentDidMount()
+  }
+
+  removeChild(sprite: Sprite) {
+    const { children } = this
+    if (children.includes(sprite)) {
+      const newSpriteList = children.filter((item) => {
+        return item !== sprite
+      })
+      sprite.componentWillUnmount()
+
+      sprite.setStage(null)
+      delete sprite.parent
+
+      this.children = newSpriteList
+    }
   }
 
   getDefaultProps(): SpriteProps | object {
@@ -88,10 +136,6 @@ class Sprite extends DrawableComponent {
       x: 0,
       y: 0,
     }
-  }
-
-  setPreRenderBox(box: PreRenderBox | null) {
-    this.preRenderBox = box
   }
 
   getPreRenderData() {
@@ -137,13 +181,44 @@ class Sprite extends DrawableComponent {
     return data ? true : false
   }
 
-  remove() {
-    // do nothing
+  render() {
+    const { children, preRenderBox } = this
+    const cloneList: Sprite[] = [...children]
+
+    cloneList.sort((a: Sprite, b: Sprite) => {
+      const zIndexA = a.zIndex
+      const zIndexB = b.zIndex
+      if (zIndexA === zIndexB) {
+        return 0
+      }
+      return zIndexA < zIndexB ? -1 : 0
+    })
+
+    const state = this.getState()
+
+    cloneList.forEach((item: Sprite) => {
+      item.render()
+    })
+
+    if (preRenderBox) {
+      this.preRenderIfNeeded()
+    }
+    this.renderSprite(this)
+    this.setPrevState(state)
   }
 
-  // life cycle
+  callOnEnterFrame() {
+    const { children } = this
+    children.forEach((item: Sprite) => {
+      item.callOnEnterFrame()
+    })
+
+    this.onEnterFrame()
+  }
+
+  // life cycle - for sprite itself
   onEnterFrame() {
-    // TODO
+    // this method should be implemented by subclass
   }
 
   getStageSize() {
@@ -154,7 +229,7 @@ class Sprite extends DrawableComponent {
     }
   }
 
-   getSelfDrawIgnoredStateNames(): string[] {
+  getSelfDrawIgnoredStateNames(): string[] {
     const names: string[] = ['rotation', 'x', 'y']
     return names
   }
@@ -176,6 +251,59 @@ class Sprite extends DrawableComponent {
     })
 
     return !isEqual(cloneState, clonePrevState)
+  }
+
+  private renderSprite(sprite: Sprite) {
+    const { preRenderBox } = sprite
+    if (preRenderBox) {
+      this.renderSpriteWithPreRender(sprite)
+    } else {
+      this.renderSpriteDirectly(sprite)
+    }
+  }
+
+  private renderSpriteWithPreRender(sprite: Sprite) {
+    const preRendered = sprite.getPreRenderData()
+    const { context2d } = sprite
+    if (!preRendered || !context2d) {
+      return
+    }
+    const { x, y } = sprite
+    const { sourceRect, targetRect, canvas, state } = preRendered
+    const dx = x - state.x
+    const dy = y - state.y
+    const sourceRectTranslated = rectTranslateWithCanvas(
+      dx,
+      dy,
+      sourceRect,
+      canvas,
+    )
+    const { width, height } = sourceRectTranslated
+
+    context2d.drawImage(
+      canvas,
+      sourceRectTranslated.x,
+      sourceRectTranslated.y,
+      width,
+      height,
+      targetRect.x + dx,
+      targetRect.y + dy,
+      width,
+      height,
+    )
+  }
+
+  private renderSpriteDirectly(sprite: Sprite) {
+    if (!sprite || !sprite.drawDirectly) {
+      throw new Error('no sprite or sprite.drawDirectly')
+    }
+    const { context2d } = sprite
+    if (!context2d) {
+      throw new Error('no context2d')
+    }
+    context2d.save()
+    sprite.drawDirectly(context2d)
+    context2d.restore()
   }
 }
 

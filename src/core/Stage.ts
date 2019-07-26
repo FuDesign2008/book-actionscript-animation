@@ -8,7 +8,6 @@ import isEqual from 'lodash.isequal'
 import Component from './Component'
 import PreRenderBox from './PreRenderBox'
 import Sprite from './Sprite'
-import SpriteManager from './SpriteManager'
 import StageProps from './StageProps'
 
 interface StageState {
@@ -29,9 +28,20 @@ class Stage extends Component {
     }
   }
 
-  private spriteManager: SpriteManager | null
+  get context2d(): CanvasRenderingContext2D | null {
+    const props: StageProps = this.props as StageProps
+    const { canvas } = props
+    if (!canvas) {
+      return null
+    }
 
-  private preRenderBox: PreRenderBox | null
+    const context2d = canvas.getContext('2d')
+    return context2d
+  }
+
+  preRenderBox: PreRenderBox | null
+
+  private spriteManager: Sprite | null
 
   constructor(props: StageProps) {
     super(props)
@@ -55,14 +65,19 @@ class Stage extends Component {
     const { canvas } = props
     const context2d = canvas.getContext('2d')
     if (context2d) {
-      const { preRenderBox } = this
-      this.spriteManager = SpriteManager.create(this, context2d, preRenderBox)
+      const spriteManager = new Sprite({
+        zIndex: 0,
+        x: 0,
+        y: 0,
+      })
+      spriteManager.setStage(this)
+      this.spriteManager = spriteManager
     }
+
+    this.initializeSpriteConfig()
 
     this.onEnterFrame = this.onEnterFrame.bind(this)
     window.requestAnimationFrame(this.onEnterFrame)
-
-    this.initializeSpriteConfig()
   }
 
   checkState() {
@@ -87,7 +102,7 @@ class Stage extends Component {
       const { usePreRender, canvas } = props
       const { spriteManager, preRenderBox } = this
       if (spriteManager) {
-        spriteManager.onEnterFrame()
+        spriteManager.callOnEnterFrame()
 
         if (usePreRender) {
           if (!isEqual(state, prevState)) {
@@ -98,7 +113,7 @@ class Stage extends Component {
           }
         }
         this.clear()
-        spriteManager.runDraw()
+        spriteManager.render()
       }
     }
 
@@ -121,14 +136,14 @@ class Stage extends Component {
   addSprite(sprite: Sprite) {
     const { spriteManager } = this
     if (spriteManager) {
-      spriteManager.add(sprite)
+      spriteManager.addChild(sprite)
     }
   }
 
   removeSprite(sprite: Sprite) {
     const { spriteManager } = this
     if (spriteManager) {
-      spriteManager.remove(sprite)
+      spriteManager.removeChild(sprite)
     }
   }
 
@@ -156,9 +171,7 @@ class Stage extends Component {
   private clear() {
     const props: StageProps = this.props as StageProps
     const { canvas } = props
-    const context2d: CanvasRenderingContext2D = canvas.getContext(
-      '2d',
-    ) as CanvasRenderingContext2D
+    const context2d = canvas.getContext('2d')
     if (context2d == null) {
       return
     }
