@@ -5,26 +5,17 @@
  */
 import Vector from '../common/Vector'
 import KeyInteractive from '../core/KeyInteractive'
-import KeyInteractiveProps from '../core/KeyInteractiveProps'
 import KeyInteractiveState from '../core/KeyInteractiveState'
 import { gotoZero } from '../utils/compute'
-
-interface BouncingBallProps extends KeyInteractiveProps {
-  accelaration: number
-  friction: number
-  speedX: number
-  speedY: number
-  radius: number
-}
-
-interface BouncingBallState extends KeyInteractiveState {
-  speedX: number
-  speedY: number
-  x: number
-  y: number
-}
+import BouncingBallProps from './BouncingBallProps'
+import BouncingBallState from './BouncingBallState'
 
 class BouncingBall extends KeyInteractive {
+  get radius() {
+    const props = this.props as BouncingBallProps
+    return props.radius
+  }
+
   constructor(props: BouncingBallProps) {
     super(props)
     const { state } = this

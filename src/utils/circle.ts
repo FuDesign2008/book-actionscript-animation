@@ -5,7 +5,7 @@
  */
 import Circle from '../types/Circle'
 
-function histTest(a: Circle, b: Circle): boolean {
+function hitTest(a: Circle, b: Circle): boolean {
   if (!a || !b) {
     return false
   }
@@ -15,4 +15,4 @@ function histTest(a: Circle, b: Circle): boolean {
   return distance <= a.radius + b.radius
 }
 
-export { histTest }
+export { hitTest }

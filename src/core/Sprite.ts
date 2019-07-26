@@ -80,10 +80,10 @@ class Sprite extends DrawableComponent {
   }
 
   parent: Sprite | null
+  protected children: Sprite[]
 
   private stage: Stage | null
   private preRenderData: PreRenderData | null
-  private children: Sprite[]
 
   constructor(props: SpriteProps) {
     super(props)
@@ -149,6 +149,10 @@ class Sprite extends DrawableComponent {
 
   setStage(stage: Stage | null) {
     this.stage = stage
+    const { children } = this
+    children.forEach((item) => {
+      item.setStage(stage)
+    })
   }
 
   // action

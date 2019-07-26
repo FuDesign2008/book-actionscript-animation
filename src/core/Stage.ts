@@ -178,16 +178,23 @@ class Stage extends Component {
           })
           parent.addChild(newSprite)
           this.initializeSpriteArray(item as any[], newSprite)
-        } else {
+        } else if (item instanceof Sprite) {
+          parent.addChild(item)
+        } else if (item.classConstructor && item.props) {
           this.initializeSpriteConfigOne(item as SpriteConfigItem, parent)
+        } else {
+          throw new Error('no handler for sprite config item')
         }
       })
     }
   }
 
   private initializeSpriteConfigOne(config: SpriteConfigItem, parent: Sprite) {
-    const { classConstructor } = config
-    const sprite = new classConstructor(config.props)
+    if (!config || !config.classConstructor || !config.props) {
+      return
+    }
+    const { classConstructor, props } = config
+    const sprite = new classConstructor(props)
     parent.addChild(sprite as Sprite)
   }
 

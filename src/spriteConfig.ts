@@ -4,10 +4,11 @@
  * @date  2019-07-16
  */
 
-import bouncingBallConfigSprite from './bouncingBallConfigSprite'
+// import bouncingBallConfigSprite from './bouncingBallConfigSprite'
 import CircularBall from './sprite/CircularBall'
 import EasingBall from './sprite/EasingBall'
 import EllipseBall from './sprite/EllipseBall'
+import HitTestBalls from './sprite/HitTestBalls'
 import MovableBall from './sprite/MovableBall'
 import OpacityBall from './sprite/OpacityBall'
 import RotationBall from './sprite/RotationBall'
@@ -21,7 +22,7 @@ const spriteConfig: any[] = [
     classConstructor: ScalingBall,
     props: {
       speed: 0.02,
-      radius: 50,
+      tradius: 50,
       innerRadius: 5,
       x: 100,
       y: 100,
@@ -113,7 +114,13 @@ const spriteConfig: any[] = [
       y: 250,
     },
   },
-  bouncingBallConfigSprite,
+  // bouncingBallConfigSprite,
+  {
+    classConstructor: HitTestBalls,
+    props: {
+      count: 10,
+    },
+  },
 ]
 
 if (isSimple) {
