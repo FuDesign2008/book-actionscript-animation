@@ -5,6 +5,8 @@
  */
 
 import isEqual from 'lodash.isequal'
+import SpriteConfigItem from '../SpriteConfigItem'
+import { clearCanvas } from '../utils/context2d'
 import Component from './Component'
 import PreRenderBox from './PreRenderBox'
 import Sprite from './Sprite'
@@ -41,7 +43,7 @@ class Stage extends Component {
 
   preRenderBox: PreRenderBox | null
 
-  private spriteManager: Sprite | null
+  private rootSprite: Sprite | null
 
   constructor(props: StageProps) {
     super(props)
@@ -61,17 +63,17 @@ class Stage extends Component {
       this.preRenderBox = new PreRenderBox(width, height)
     }
 
-    this.spriteManager = null
+    this.rootSprite = null
     const { canvas } = props
     const context2d = canvas.getContext('2d')
     if (context2d) {
-      const spriteManager = new Sprite({
+      const rootSprite = new Sprite({
         zIndex: 0,
         x: 0,
         y: 0,
       })
-      spriteManager.setStage(this)
-      this.spriteManager = spriteManager
+      rootSprite.setStage(this)
+      this.rootSprite = rootSprite
     }
 
     this.initializeSpriteConfig()
@@ -100,20 +102,20 @@ class Stage extends Component {
 
       const props: StageProps = this.props as StageProps
       const { usePreRender, canvas } = props
-      const { spriteManager, preRenderBox } = this
-      if (spriteManager) {
-        spriteManager.callOnEnterFrame()
+      const { rootSprite, preRenderBox } = this
+      if (rootSprite) {
+        rootSprite.callOnEnterFrame()
 
         if (usePreRender) {
           if (!isEqual(state, prevState)) {
             if (preRenderBox && canvas) {
               preRenderBox.updateSize(canvas.width, canvas.height)
             }
-            spriteManager.onPrerenderContextChange()
+            rootSprite.onPrerenderContextChange()
           }
         }
         this.clear()
-        spriteManager.render()
+        rootSprite.render()
       }
     }
 
@@ -134,16 +136,16 @@ class Stage extends Component {
   }
 
   addSprite(sprite: Sprite) {
-    const { spriteManager } = this
-    if (spriteManager) {
-      spriteManager.addChild(sprite)
+    const { rootSprite } = this
+    if (rootSprite) {
+      rootSprite.addChild(sprite)
     }
   }
 
   removeSprite(sprite: Sprite) {
-    const { spriteManager } = this
-    if (spriteManager) {
-      spriteManager.removeChild(sprite)
+    const { rootSprite } = this
+    if (rootSprite) {
+      rootSprite.removeChild(sprite)
     }
   }
 
@@ -159,24 +161,41 @@ class Stage extends Component {
   private initializeSpriteConfig() {
     const props: StageProps = this.props as StageProps
     const { spriteConfig } = props
-    if (spriteConfig && spriteConfig.forEach) {
-      spriteConfig.forEach((config) => {
-        const { classConstructor } = config
-        const sprite = new classConstructor(config.props)
-        this.addSprite(sprite as Sprite)
+    const { rootSprite } = this
+    if (rootSprite && spriteConfig) {
+      this.initializeSpriteArray(spriteConfig, rootSprite)
+    }
+  }
+
+  private initializeSpriteArray(configList: any[], parent: Sprite) {
+    if (configList && configList.forEach) {
+      configList.forEach((item) => {
+        if (Array.isArray(item)) {
+          const newSprite = new Sprite({
+            x: 0,
+            y: 0,
+            zIndex: 0,
+          })
+          parent.addChild(newSprite)
+          this.initializeSpriteArray(item as any[], newSprite)
+        } else {
+          this.initializeSpriteConfigOne(item as SpriteConfigItem, parent)
+        }
       })
     }
+  }
+
+  private initializeSpriteConfigOne(config: SpriteConfigItem, parent: Sprite) {
+    const { classConstructor } = config
+    const sprite = new classConstructor(config.props)
+    parent.addChild(sprite as Sprite)
   }
 
   private clear() {
     const props: StageProps = this.props as StageProps
     const { canvas } = props
     const context2d = canvas.getContext('2d')
-    if (context2d == null) {
-      return
-    }
-    const { width, height } = canvas
-    context2d.clearRect(0, 0, width, height)
+    clearCanvas(context2d)
   }
 }
 

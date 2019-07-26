@@ -13,11 +13,10 @@ import OpacityBall from './sprite/OpacityBall'
 import RotationBall from './sprite/RotationBall'
 import ScalingBall from './sprite/ScalingBall'
 import VectorBall from './sprite/VectorBall'
-import SpriteConfigItem from './SpriteConfigItem'
 
 const isSimple = false
 
-const spriteConfig: SpriteConfigItem[] = [
+const spriteConfig: any[] = [
   {
     classConstructor: ScalingBall,
     props: {
@@ -114,7 +113,7 @@ const spriteConfig: SpriteConfigItem[] = [
       y: 250,
     },
   },
-  ...bouncingBallConfigSprite,
+  bouncingBallConfigSprite,
 ]
 
 if (isSimple) {
