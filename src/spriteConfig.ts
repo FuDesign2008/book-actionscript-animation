@@ -4,7 +4,6 @@
  * @date  2019-07-16
  */
 
-// import bouncingBallConfigSprite from './bouncingBallConfigSprite'
 import CircularBall from './sprite/CircularBall'
 import EasingBall from './sprite/EasingBall'
 import EllipseBall from './sprite/EllipseBall'
@@ -14,6 +13,7 @@ import OpacityBall from './sprite/OpacityBall'
 import RotationBall from './sprite/RotationBall'
 import ScalingBall from './sprite/ScalingBall'
 import VectorBall from './sprite/VectorBall'
+import SpringBalls from './sprite/SpringBalls'
 
 const isSimple = false
 
@@ -114,11 +114,19 @@ const spriteConfig: any[] = [
       y: 250,
     },
   },
-  // bouncingBallConfigSprite,
   {
     classConstructor: HitTestBalls,
     props: {
       count: 10,
+    },
+  },
+
+  {
+    classConstructor: SpringBalls,
+    props: {
+      ballCount: 70,
+      springAmount: 0.001,
+      distance: 150,
     },
   },
 ]

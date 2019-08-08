@@ -10,6 +10,7 @@ import { hitTest } from '../utils/circle'
 import BouncingBall from './BouncingBall'
 import BouncingBallProps from './BouncingBallProps'
 import BouncingBallState from './BouncingBallState'
+import hitAudio from '../hit.mp3'
 
 function createBouncingBallProps(): BouncingBallProps {
   const speedX = Math.round(Math.random() * 15) - 5
@@ -33,9 +34,15 @@ interface HitTestBallsProps extends SpriteProps {
 }
 
 class HitTestBalls extends Sprite {
+  private audio: HTMLAudioElement | null
+  private canPlay: boolean
+
   constructor(props: HitTestBallsProps) {
     super(props)
+    this.audio = null
+    this.canPlay = false
     this.initializeChildren()
+    this.createAudio()
   }
 
   initializeChildren() {
@@ -49,20 +56,49 @@ class HitTestBalls extends Sprite {
   }
 
   onEnterFrame() {
-    this.hitTestChildren()
+    const hasHit = this.hitTestChildren()
+    if (hasHit) {
+      this.playAudio()
+    }
   }
 
-  private hitTestChildren() {
+  private hitTestChildren(): boolean {
     const children: BouncingBall[] = this.children as BouncingBall[]
     const len = children.length
+    let hasHit = false
     for (let index = 0; index < len; index++) {
       for (let nextIndex = index + 1; nextIndex < len; nextIndex++) {
         const child = children[index]
         const next = children[nextIndex]
         const isHit = hitTest(child as Circle, next as Circle)
         if (isHit) {
+          hasHit = true
           this.revertSpeed(child, next)
         }
+      }
+    }
+    return hasHit
+  }
+
+  private createAudio() {
+    const { audio } = this
+    if (!audio) {
+      const theAudio = document.createElement('audio')
+      theAudio.src = hitAudio
+      theAudio.oncanplay = () => {
+        this.canPlay = true
+      }
+      this.audio = theAudio
+    }
+  }
+
+  private playAudio() {
+    const { audio, canPlay } = this
+    if (audio && canPlay) {
+      try {
+        audio.play()
+      } catch (ex) {
+        // do nothing
       }
     }
   }
@@ -73,8 +109,8 @@ class HitTestBalls extends Sprite {
       item.setState((state: BouncingBallState) => {
         const { speedX, speedY } = state
         return {
-          speedX: 0 - speedX,
-          speedY: 0 - speedY,
+          speedX: 0 - speedX + 1,
+          speedY: 0 - speedY + 1,
         }
       })
     })

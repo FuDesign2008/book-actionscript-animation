@@ -41,9 +41,9 @@ class BouncingBall extends KeyInteractive {
       let newSpeedY = speedY
       const angle = this.convertToAngle(state)
       if (angle >= 0) {
-        const vector = new Vector(accelaration, (angle * Math.PI) / 180)
-        newSpeedX += vector.valueX
-        newSpeedY += vector.valueY
+        const vector = Vector.vectorFromAngle(accelaration, angle, false)
+        newSpeedX += vector.x
+        newSpeedY += vector.y
       } else {
         newSpeedX = gotoZero(speedX, friction)
         newSpeedY = gotoZero(speedY, friction)

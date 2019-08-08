@@ -10,10 +10,7 @@ import PreRenderBox from './PreRenderBox'
 import PreRenderData from './PreRenderData'
 import SpriteProps from './SpriteProps'
 import Stage from './Stage'
-
-interface SpriteState extends SpriteProps {
-  angle: number
-}
+import SpriteState from './SpriteState'
 
 class Sprite extends DrawableComponent {
   get zIndex(): number {
@@ -85,7 +82,7 @@ class Sprite extends DrawableComponent {
   private stage: Stage | null
   private preRenderData: PreRenderData | null
 
-  constructor(props: SpriteProps) {
+  constructor(props: any) {
     super(props)
 
     const theProps: SpriteProps = this.props as SpriteProps

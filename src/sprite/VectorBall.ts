@@ -50,8 +50,8 @@ class VectorBall extends KeyInteractive {
       const angle = this.convertToAngle(state)
       if (angle >= 0) {
         const vector = new Vector(accelaration, (angle * Math.PI) / 180)
-        newSpeedX += vector.valueX
-        newSpeedY += vector.valueY
+        newSpeedX += vector.x
+        newSpeedY += vector.y
       } else {
         newSpeedX = gotoZero(speedX, friction)
         newSpeedY = gotoZero(speedY, friction)

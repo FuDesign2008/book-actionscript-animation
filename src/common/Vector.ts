@@ -5,22 +5,52 @@
  */
 
 class Vector {
-  value: number
-  angle: number
+  x: number
+  y: number
 
-  constructor(value: number, angle: number) {
-    this.value = value
-    this.angle = angle
+  constructor(x: number, y: number) {
+    this.x = x
+    this.y = y
   }
 
-  get valueX(): number {
-    const { value, angle } = this
-    return value * Math.cos(angle)
+  get radian(): number {
+    const { x, y } = this
+    const angle = Math.atan2(y, x)
+    return angle
   }
 
-  get valueY(): number {
-    const { value, angle } = this
-    return value * Math.sin(angle)
+  get degree() {
+    const { radian } = this
+    return (radian * 180) / Math.PI
+  }
+
+  add(v: Vector): Vector {
+    const x = this.x + v.x
+    const y = this.y + v.y
+    const vector = new Vector(x, y)
+    return vector
+  }
+
+  subtract(v: Vector): Vector {
+    const x = this.x - v.x
+    const y = this.x - v.y
+    const vector = new Vector(x, y)
+    return vector
+  }
+
+  static vectorFromAngle(
+    value: number,
+    angle: number,
+    isDegree = false,
+  ): Vector {
+    let radian = angle
+    if (isDegree) {
+      radian = (angle * Math.PI) / 180
+    }
+    const x = value * Math.cos(radian)
+    const y = value * Math.sin(radian)
+    const v = new Vector(x, y)
+    return v
   }
 }
 
